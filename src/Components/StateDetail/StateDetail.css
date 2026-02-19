@@ -19,36 +19,33 @@
   text-decoration: underline;
 }
 
-.state-info {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
-  padding: 30px;
-  border-radius: 12px;
+.page-header {
   margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid #4CAF50;
 }
 
-.state-info h1 {
+.page-header h1 {
   margin-top: 0;
   margin-bottom: 15px;
   font-size: 2.5rem;
+  color: #2e7d32;
 }
 
 .state-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 10px;
 }
 
-.state-meta p {
-  margin: 0;
-  font-size: 1rem;
-  background-color: rgba(255, 255, 255, 0.2);
+.meta-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+  color: white;
   padding: 8px 15px;
-  border-radius: 6px;
-}
-
-.state-meta strong {
-  font-weight: 600;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .cities-section {
@@ -57,7 +54,7 @@
 
 .cities-section h2 {
   font-size: 2rem;
-  color: #333;
+  color: #2e7d32;
   margin-bottom: 20px;
 }
 
@@ -78,14 +75,14 @@
 
 .city-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  border-color: #f5576c;
+  box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+  border-color: #4CAF50;
 }
 
 .city-card h3 {
   margin-top: 0;
   margin-bottom: 8px;
-  color: #2c3e50;
+  color: #1b5e20;
   font-size: 1.2rem;
 }
 
@@ -106,7 +103,7 @@
 
 .no-data {
   text-align: center;
-  color: #999;
+  color: #81c784;
   font-size: 1.1rem;
   margin-top: 40px;
 }

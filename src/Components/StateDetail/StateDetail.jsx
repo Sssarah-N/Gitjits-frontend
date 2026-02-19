@@ -56,19 +56,19 @@ function StateDetail() {
         ← Back to {countryCode}
       </Link>
       
-      {state && (
-        <div className="state-info">
-          <h1>{state.name}</h1>
+      <div className="page-header">
+        <h1>{state?.name || stateCode}</h1>
+        {state && (
           <div className="state-meta">
-            <p><strong>State Code:</strong> {state.state_code}</p>
-            <p><strong>Country Code:</strong> {state.country_code}</p>
-            {state.capital && <p><strong>Capital:</strong> {state.capital}</p>}
+            {state.state_code && <span className="meta-badge">{state.state_code}</span>}
+            {state.country_code && <span className="meta-badge">Country: {state.country_code}</span>}
+            {state.capital && <span className="meta-badge">Capital: {state.capital}</span>}
             {state.population && (
-              <p><strong>Population:</strong> {state.population.toLocaleString()}</p>
+              <span className="meta-badge">Pop: {state.population.toLocaleString()}</span>
             )}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       <div className="cities-section">
         <h2>Cities</h2>
