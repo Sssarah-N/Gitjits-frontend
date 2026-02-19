@@ -3,28 +3,24 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  useParams,
 } from 'react-router-dom';
 
 import './App.css';
 
 import Navbar from './Components/Navbar';
-import Games from './Components/Games';
-
-function GamePage() {
-  const { name } = useParams();
-  return <h1>{name}</h1>
-}
+import Countries from './Components/Countries';
+import CountryDetail from './Components/CountryDetail';
+import StateDetail from './Components/StateDetail';
 
 function App() {
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
-        {/* For a different home page, do: */}
-        {/* <Route index element={<Login />} /> */}
-        <Route path="games" element={<Games />} />
-        <Route path="games/:name" element={<GamePage />} />
+        <Route index element={<Countries />} />
+        <Route path="countries" element={<Countries />} />
+        <Route path="countries/:code" element={<CountryDetail />} />
+        <Route path="countries/:countryCode/states/:stateCode" element={<StateDetail />} />
       </Routes>
     </BrowserRouter>
   );
