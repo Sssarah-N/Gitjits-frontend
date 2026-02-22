@@ -20,7 +20,7 @@ function StateDetail() {
     Promise.all([
       axios.get(`${BACKEND_URL}/countries/${countryCode}/states/${stateCode}`),
       axios.get(`${BACKEND_URL}/countries/${countryCode}/states/${stateCode}/cities`),
-      axios.get(`${BACKEND_URL}/countries/${countryCode}/states/${stateCode}/parks`)
+      axios.get(`${BACKEND_URL}/countries/${countryCode}/states/${stateCode}/parks`).catch(() => ({ data: { Parks: [] } }))
     ])
       .then(([stateRes, citiesRes, parksRes]) => {
         setState(stateRes.data.State);
