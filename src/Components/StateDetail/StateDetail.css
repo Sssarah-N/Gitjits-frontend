@@ -108,6 +108,10 @@
   gap: 15px;
 }
 
+.park-card-link {
+  text-decoration: none;
+  color: inherit;
+}
 .park-card {
   background: white;
   border: 2px solid #e0e0e0;

@@ -95,13 +95,19 @@ function StateDetail() {
         
         {parks.length > 0 ? (
           <div className="parks-grid">
-            {parks.map((park, index) => (
-              <div key={`${park.name}-${index}`} className="park-card">
-                <h3>{park.name}</h3>
-                {park.state_code && <p className="park-code">{park.state_code}</p>}
-              </div>
-            ))}
-          </div>
+          {parks.map((park) => (
+            <Link
+              key={park.park_code}
+              to={`/countries/${countryCode}/states/${stateCode}/parks/${park.park_code}`}
+              className="park-card-link"
+            >
+            <div className="park-card">
+            <h3>{park.name}</h3>
+              {park.state_code && <p className="park-code">{park.state_code}</p>}
+            </div>
+            </Link>
+          ))}
+        </div>
         ) : (
           <p className="no-data">No parks found for this state.</p>
         )}

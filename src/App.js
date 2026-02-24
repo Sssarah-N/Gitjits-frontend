@@ -11,6 +11,7 @@ import Navbar from './Components/Navbar';
 import Countries from './Components/Countries';
 import CountryDetail from './Components/CountryDetail';
 import StateDetail from './Components/StateDetail';
+import ParkDetail from './Components/ParkDetail';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="countries" element={<Countries />} />
         <Route path="countries/:code" element={<CountryDetail />} />
         <Route path="countries/:countryCode/states/:stateCode" element={<StateDetail />} />
+        <Route path="/countries/:countryCode/states/:stateCode/parks/:parkCode" element={<ParkDetail />} />
       </Routes>
     </BrowserRouter>
   );
