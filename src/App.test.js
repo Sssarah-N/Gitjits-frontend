@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders countries link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/countries/i);
-  expect(linkElement).toBeInTheDocument();
+describe('App Component', () => {
+  test('renders without crashing', () => {
+    render(<App />);
+    expect(screen.getByText(/countries/i)).toBeInTheDocument();
+  });
+
+  test('renders navbar', () => {
+    const { container } = render(<App />);
+    expect(container.querySelector('nav')).toBeInTheDocument();
+  });
 });
