@@ -55,7 +55,9 @@ function ParkDetail() {
 
       { park?.images?.length > 0 && (
         <div className="park-images">
-          <img src={park.images[0].url} alt={park.images[0].title} />
+          { park.images.map((image) => (
+              <img key={image.url} src={image.url} alt={image.title} />
+          ))}
         </div>
       )}
 
