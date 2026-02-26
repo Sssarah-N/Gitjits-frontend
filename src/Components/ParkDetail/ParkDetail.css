@@ -82,3 +82,14 @@
   font-size: 1.1rem;
   margin-top: 40px;
 }
+
+.park-images {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.park-images img {
+  max-width: 20vw;
+}

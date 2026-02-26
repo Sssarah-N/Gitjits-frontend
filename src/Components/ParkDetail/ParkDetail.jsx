@@ -53,6 +53,12 @@ function ParkDetail() {
         ← Back to {stateCode} Parks
       </Link>
 
+      { park?.images?.length > 0 && (
+        <div className="park-images">
+          <img src={park.images[0].url} alt={park.images[0].title} />
+        </div>
+      )}
+
       <div className="page-header">
         <h1>{park?.name || parkCode}</h1>
         <div className="park-meta">
