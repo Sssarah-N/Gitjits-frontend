@@ -64,6 +64,7 @@ function ParkDetail() {
       <div className="page-header">
         <h1>{park?.name || parkCode}</h1>
         <div className="park-meta">
+          {park.city && <span className="meta-badge"> {park.city}</span>}
           {park.state_code && <span className="meta-badge">{Array.isArray(park.state_code) ? park.state_code.join(", ") : park.state_code}</span>}
           {park.country_code && <span className="meta-badge">Country: {park.country_code}</span>}
           {park.type && <span className="meta-badge">Type: {park.type}</span>}

@@ -104,6 +104,7 @@ function StateDetail() {
             >
             <div className="park-card">
             <h3>{park.name}</h3>
+              {park.city && <p className="park-code"> {park.city}, </p>}
               {park.state_code && <p className="park-code">{Array.isArray(park.state_code) ? park.state_code.join(", ") : park.state_code}</p>}
             </div>
             </Link>
