@@ -72,6 +72,20 @@ function ParkDetail() {
         </div>
       </div>
 
+      {park.addresses && (
+        <div className="park-addresses">
+          {park.addresses.map((address) => (
+            <div key={address.id}>
+              { address.type && <h4>{address.type}</h4> }
+              { address.line1 && <p>{address.line1}</p> }
+              { address.line2 && <p>{address.line2}</p> }
+              { address.line3 && <p>{address.line3}</p> }
+              <p>{address.city}, {address.stateCode} {address.postalCode}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
       {park.operating_hours &&
     Object.entries(park.operating_hours).map(([unitName, unit]) => (
       <div key={unitName} className="park-hours">
