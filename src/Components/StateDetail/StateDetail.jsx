@@ -5,6 +5,7 @@ import axios from 'axios';
 import { BACKEND_URL } from '../../constants';
 import './StateDetail.css';
 
+
 function StateDetail() {
   const { countryCode, stateCode } = useParams();
   const [error, setError] = useState('');
@@ -103,7 +104,7 @@ function StateDetail() {
             >
             <div className="park-card">
             <h3>{park.name}</h3>
-              {park.state_code && <p className="park-code">{park.state_code}</p>}
+              {park.state_code && <p className="park-code">{Array.isArray(park.state_code) ? park.state_code.join(", ") : park.state_code}</p>}
             </div>
             </Link>
           ))}
