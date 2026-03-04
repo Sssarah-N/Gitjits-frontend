@@ -74,9 +74,9 @@ function ParkDetail() {
 
       {park.addresses && (
         <div className="park-addresses">
-          {park.addresses.map((address) => (
-            <div key={address.id}>
-              { address.type && <h4>{address.type}</h4> }
+          {park.addresses.filter((address) => address.type == "Physical").map((address) => (
+            <div key={address.id} className="park-address">
+              <h4>Address</h4>
               { address.line1 && <p>{address.line1}</p> }
               { address.line2 && <p>{address.line2}</p> }
               { address.line3 && <p>{address.line3}</p> }
