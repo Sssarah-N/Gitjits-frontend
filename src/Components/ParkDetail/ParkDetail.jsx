@@ -11,6 +11,11 @@ function ParkDetail() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const convertLatLongToMapsURL = (lat, long) => {
+    const url = `https://www.google.com/maps?q=${lat}+${long}`;
+    return url.replaceAll(" ", "+");
+  }
+
   useEffect(() => {
     setLoading(true);
     setError('');
@@ -75,7 +80,9 @@ function ParkDetail() {
       {park.addresses && (
         <div className="park-addresses">
           {park.addresses.filter((address) => address.type == "Physical").map((address) => (
-            <div key={address.id} className="park-address">
+            <div key={address.id} className="park-address"
+              onClick={() => window.open(convertLatLongToMapsURL(park.latitude, park.longitude), '_blank')}
+            >
               <h4>Address</h4>
               { address.line1 && <p>{address.line1}</p> }
               { address.line2 && <p>{address.line2}</p> }
