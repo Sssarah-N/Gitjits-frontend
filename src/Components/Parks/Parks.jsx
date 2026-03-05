@@ -96,7 +96,7 @@ function Parks() {
     <div className="parks-wrapper">
       <header className="parks-header">
         <h1>National Parks</h1>
-        <p className="parks-subtitle">Explore America's natural treasures</p>
+        <p className="parks-subtitle">Explore America&apos;s natural treasures</p>
         
         <form className="search-form" onSubmit={handleSearch}>
           <input
