@@ -116,7 +116,7 @@ function Parks() {
         
         {isSearching && (
           <p className="search-results">
-            Found {parks.length} park{parks.length !== 1 ? 's' : ''} matching "{searchQuery}"
+            Found {parks.length} park{parks.length !== 1 ? 's' : ''} matching &quot;{searchQuery}&quot;
           </p>
         )}
       </header>
