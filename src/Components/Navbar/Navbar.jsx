@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 const PAGES = [
   { label: 'Countries', destination: '/countries' },
+  { label: 'Parks', destination: '/parks' },
 ];
 
 function NavLink({ page }) {
