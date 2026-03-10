@@ -6,23 +6,22 @@ import { BACKEND_URL } from '../../constants';
 import './ParksSearch.css';
 
 const PARKS_ENDPOINT = `${BACKEND_URL}/parks`;
-const SEARCH_ENDPOINT = `${BACKEND_URL}/parks/search`;
 
 function Parks() {
   const [error, setError] = useState('');
+  const [allParks, setAllParks] = useState([]);
   const [parks, setParks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
 
-  // Load all parks on mount
+  // Load all parks once on mount
   useEffect(() => {
-    setLoading(true);
     axios.get(PARKS_ENDPOINT)
       .then((res) => {
-        setParks(res.data.Parks || []);
+        const data = res.data.Parks || [];
+        setAllParks(data);
+        setParks(data);
         setLoading(false);
-
       })
       .catch(() => {
         setError('There was a problem retrieving the parks data.');
@@ -30,52 +29,23 @@ function Parks() {
       });
   }, []);
 
-  // Handle search
-  const handleSearch = (e) => {
-    e.preventDefault();
+  // Filter as user types
+  useEffect(() => {
     if (!searchQuery.trim()) {
-      // Reset to all parks
-      setLoading(true);
-      axios.get(PARKS_ENDPOINT)
-        .then((res) => {
-          setParks(res.data.Parks || []);
-          setLoading(false);
-          setIsSearching(false);
-        })
-        .catch(() => {
-          setError('There was a problem retrieving the parks data.');
-          setLoading(false);
-        });
-      return;
+      setParks(allParks);
+    } else {
+      const q = searchQuery.toLowerCase();
+      setParks(allParks.filter(park => {
+        const name = park.name?.toLowerCase() || '';
+        const fullName = park.full_name?.toLowerCase() || '';
+        return name.startsWith(q) || fullName.startsWith(q) ||
+          name.split(' ').some(word => word.startsWith(q)) ||
+          fullName.split(' ').some(word => word.startsWith(q));
+      }));
     }
+  }, [searchQuery, allParks]);
 
-    setLoading(true);
-    setIsSearching(true);
-    axios.get(`${SEARCH_ENDPOINT}?name=${encodeURIComponent(searchQuery)}`)
-      .then((res) => {
-        setParks(res.data.Parks || []);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('There was a problem searching parks.');
-        setLoading(false);
-      });
-  };
-
-  const clearSearch = () => {
-    setSearchQuery('');
-    setIsSearching(false);
-    setLoading(true);
-    axios.get(PARKS_ENDPOINT)
-      .then((res) => {
-        setParks(res.data.Parks || []);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('There was a problem retrieving the parks data.');
-        setLoading(false);
-      });
-  };
+  const isSearching = searchQuery.trim().length > 0;
 
   if (loading) {
     return (
@@ -99,21 +69,23 @@ function Parks() {
         <h1>National Parks</h1>
         <p className="parks-subtitle">Explore America&apos;s natural treasures</p>
 
-        <form className="search-form" onSubmit={handleSearch}>
-          <input
-            type="text"
-            placeholder="Search parks by name..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-          <button type="submit" className="search-btn">Search</button>
-          {isSearching && (
-            <button type="button" className="clear-btn" onClick={clearSearch}>
-              Clear
-            </button>
-          )}
-        </form>
+        <form className="search-form">
+        <input
+          type="text"
+          placeholder="Search parks by name..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-input"
+        />
+        <button type="submit" className="search-btn" onClick={(e) => e.preventDefault()}>
+          Search
+        </button>
+        {isSearching && (
+          <button type="button" className="clear-btn" onClick={() => setSearchQuery('')}>
+            Clear
+          </button>
+        )}
+      </form>
 
         {isSearching && (
           <p className="search-results">
