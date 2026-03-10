@@ -86,23 +86,51 @@ function ParkDetail() {
         </div>
       )}
 
-      {park.addresses && (
-        <div className="park-addresses">
-          {park.addresses.filter((address) => address.type == "Physical").map((address) => (
-            <div key={address.id} className="park-address">
-              <h4>Address
-                  <a className="google-maps-link"
-                  onClick={() => window.open(convertLatLongToMapsURL(park.latitude, park.longitude), '_blank')}
-                >(View on Google Maps)</a>
-              </h4>
-              { address.line1 && <p>{address.line1}</p> }
-              { address.line2 && <p>{address.line2}</p> }
-              { address.line3 && <p>{address.line3}</p> }
-              <p>{address.city}, {address.stateCode} {address.postalCode}</p>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="park-address-content-container">
+        {park.addresses && (
+          <div className="park-addresses">
+            {park.addresses.filter((address) => address.type == "Physical").map((address) => (
+              <div key={address.id} className="park-address">
+                <h4>Address
+                    <a className="google-maps-link"
+                    onClick={() => window.open(convertLatLongToMapsURL(park.latitude, park.longitude), '_blank')}
+                  >(View on Google Maps)</a>
+                </h4>
+                { address.line1 && <p>{address.line1}</p> }
+                { address.line2 && <p>{address.line2}</p> }
+                { address.line3 && <p>{address.line3}</p> }
+                <p>{address.city}, {address.stateCode} {address.postalCode}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {park.contacts && (
+          <div className="park-contact">
+            {park.contacts.emailAddresses && (
+              <>
+              {park.contacts.emailAddresses.map((email) => (
+                <>
+                <h4>Email {email.description && `(${email.description})`}</h4>
+                <p>{email.emailAddress}</p>
+                </>
+              ))}
+              </>
+            )}
+            {park.contacts.phoneNumbers && (
+              <>
+              {park.contacts.phoneNumbers.map((phone) => (
+                <>
+                <h4>Phone {phone.description && `(${phone.description})`}</h4>
+                <p>{phone.phoneNumber}</p>
+                </>
+              ))}
+              </>
+            )}
+          </div>
+        )}
+
+      </div>
       
       {park.operating_hours && Object.entries(park.operating_hours).map(([unitName, unit]) => (
         <div key={unitName} className="park-hours">

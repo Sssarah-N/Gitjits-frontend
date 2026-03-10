@@ -92,6 +92,12 @@
   border-radius: 0.5rem;
 }
 
+.park-address-content-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
 .park-addresses {
   display: flex;
   flex-direction: row;
@@ -133,5 +139,24 @@
 
   .google-maps-link:hover {
     text-decoration: underline;
+  }
+}
+
+.park-contact {
+  display: grid;
+  width: fit-content;
+  height: fit-content;
+  margin-top: 1rem;
+  grid-template-columns: auto auto;
+  gap: 1rem;
+
+  h4 {
+    margin: 0;
+    padding: 0;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }
