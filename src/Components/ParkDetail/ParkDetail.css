@@ -107,6 +107,10 @@
   overflow: clip;
   transition: all 0.2s ease;
 
+  svg {
+    fill: black;
+  }
+
   p, h4 {
     margin: 0;
   }
@@ -119,13 +123,15 @@
     transition: all 0.2s ease;
   }
 
-  &:hover {
-    cursor: pointer;
-    border-color: #45a049;
+  .google-maps-link {
+    margin-left: 0.5rem;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;  
+  }
 
-    h4 {
-      background-color: #45a049;
-      color: white;
-    }
+  .google-maps-link:hover {
+    text-decoration: underline;
   }
 }
