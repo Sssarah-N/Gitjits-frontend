@@ -48,48 +48,49 @@
   font-weight: 500;
 }
 
-.cities-section {
-  margin-top: 40px;
-}
-
-.cities-section h2 {
-  font-size: 2rem;
-  color: #2e7d32;
-  margin-bottom: 20px;
-}
-
 .cities-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
 }
 
 .city-card {
   background: white;
   border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 15px;
+  border-radius: 10px;
+  padding: 20px;
   transition: all 0.3s ease;
-  cursor: default;
+  cursor: pointer;
+  height: 100%;
 }
 
 .city-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
   border-color: #4CAF50;
 }
 
 .city-card h3 {
   margin-top: 0;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   color: #1b5e20;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
 }
 
-.city-code {
+.city-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.city-details p {
   margin: 0;
-  font-size: 0.85rem;
-  color: #777;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.city-details strong {
+  color: #2e7d32;
 }
 
 .parks-section {
@@ -104,8 +105,8 @@
 
 .parks-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
 }
 
 .park-card-link {
@@ -116,29 +117,36 @@
 .park-card {
   background: white;
   border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 15px;
+  border-radius: 10px;
+  padding: 20px;
   transition: all 0.3s ease;
-  cursor: default;
+  cursor: pointer;
+  height: 100%;
 }
 
 .park-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
   border-color: #4CAF50;
 }
 
 .park-card h3 {
   margin-top: 0;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   color: #1b5e20;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
 }
 
-.park-code {
+.park-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.park-details p {
   margin: 0;
-  font-size: 0.85rem;
-  color: #777;
+  font-size: 0.9rem;
+  color: #555;
 }
 
 .error-message {

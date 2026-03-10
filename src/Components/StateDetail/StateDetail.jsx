@@ -59,7 +59,7 @@ function StateDetail() {
       <Link to={`/countries/${countryCode}`} className="back-link">
         ← Back to {countryCode}
       </Link>
-      
+
       <div className="page-header">
         <h1>{state?.name || stateCode}</h1>
         {state && (
@@ -76,14 +76,16 @@ function StateDetail() {
 
       <div className="cities-section">
         <h2>Cities</h2>
-        
+
         {cities.length > 0 ? (
           <div className="cities-grid">
             {cities.map((city, index) => (
               <div key={`${city.name}-${index}`} className="city-card">
-                <h3>{city.name}</h3>
-                <p className="city-code">{city.state_code}</p>
+              <h3>{city.name}</h3>
+              <div className="city-details">
+                <p><strong>State:</strong> {city.state_code}</p>
               </div>
+            </div>
             ))}
           </div>
         ) : (
@@ -93,23 +95,29 @@ function StateDetail() {
 
       <div className="parks-section">
         <h2>Parks</h2>
-        
+
         {parks.length > 0 ? (
           <div className="parks-grid">
-          {parks.map((park) => (
-            <Link
-              key={park.park_code}
-              to={`/countries/${countryCode}/states/${stateCode}/parks/${park.park_code}`}
-              className="park-card-link"
-            >
-            <div className="park-card">
-            <h3>{park.name}</h3>
-              {park.city && <p className="park-code"> {park.city}, </p>}
-              {park.state_code && <p className="park-code">{Array.isArray(park.state_code) ? park.state_code.join(", ") : park.state_code}</p>}
-            </div>
-            </Link>
-          ))}
-        </div>
+            {parks.map((park) => (
+              <Link
+                key={park.park_code}
+                to={`/countries/${countryCode}/states/${stateCode}/parks/${park.park_code}`}
+                className="park-card-link"
+              >
+                <div className="park-card">
+                  <h3>{park.name}</h3>
+                  <div className="park-details">
+                    {park.city && <p><strong>City:</strong> {park.city}</p>}
+                    {park.state_code && (
+                      <p><strong>State(s):</strong> {Array.isArray(park.state_code) ? park.state_code.join(', ') : park.state_code}</p>
+                    )}
+                    {park.type && <p><strong>Type:</strong> {park.type}</p>}
+                  </div>
+                </div>
+
+              </Link>
+            ))}
+          </div>
         ) : (
           <p className="no-data">No parks found for this state.</p>
         )}

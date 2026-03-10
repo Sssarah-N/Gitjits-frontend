@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 import { BACKEND_URL } from '../../constants';
-import './Parks.css';
+import './ParksSearch.css';
 
 const PARKS_ENDPOINT = `${BACKEND_URL}/parks`;
 const SEARCH_ENDPOINT = `${BACKEND_URL}/parks/search`;

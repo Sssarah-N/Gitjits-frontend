@@ -51,7 +51,7 @@ function CountryDetail() {
   return (
     <div className="country-detail-wrapper">
       <Link to="/countries" className="back-link">← Back to Countries</Link>
-      
+
       <div className="page-header">
         <h1>{country?.name || code}</h1>
         {country && (
@@ -68,7 +68,7 @@ function CountryDetail() {
 
       <div className="states-section">
         <h2>States / Provinces</h2>
-        
+
         {states.length > 0 ? (
           <div className="states-grid">
             {states.map((state) => (
