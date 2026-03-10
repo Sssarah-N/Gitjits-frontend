@@ -21,7 +21,7 @@ function ParkDetail() {
     setError('');
 
     axios
-      .get(`${BACKEND_URL}/parks/${parkCode}`)
+      .get(`${BACKEND_URL}/parks/code/${parkCode}`)
       .then((res) => {
         console.log("Backend park response:", res.data);
         setPark(res.data.Park);
@@ -93,8 +93,7 @@ function ParkDetail() {
         </div>
       )}
 
-      {park.operating_hours &&
-    Object.entries(park.operating_hours).map(([unitName, unit]) => (
+      {park.operating_hours && Object.entries(park.operating_hours).map(([unitName, unit]) => (
       <div key={unitName} className="park-hours">
         <p>{unit.description}</p>
         {unit.standardHours && (
