@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation} from 'react-router-dom';
 import axios from 'axios';
 
 import { BACKEND_URL } from '../../constants';
 import './ParkDetail.css';
 
 function ParkDetail() {
+  const location = useLocation();
+  const fromSearch = location.state?.from === 'search';
   const { countryCode, stateCode, parkCode } = useParams();
   const [park, setPark] = useState(null);
   const [error, setError] = useState('');
@@ -45,18 +47,18 @@ function ParkDetail() {
     return (
       <div className="park-detail-wrapper">
         <div className="error-message">{error}</div>
-        <Link to={`/countries/${countryCode}/states/${stateCode}`} className="back-link">
-          ← Back to {stateCode} Parks
-        </Link>
+        <Link to={fromSearch ? '/parks' : `/countries/${countryCode}/states/${stateCode}`} className="back-link">
+  {fromSearch ? '← Back to All Parks' : `← Back to ${stateCode} Parks`}
+</Link>
       </div>
     );
   }
 
   return (
     <div className="park-detail-wrapper">
-      <Link to={`/countries/${countryCode}/states/${stateCode}`} className="back-link">
-        ← Back to {stateCode} Parks
-      </Link>
+   <Link to={fromSearch ? '/parks' : `/countries/${countryCode}/states/${stateCode}`} className="back-link">
+  {fromSearch ? '← Back to All Parks' : `← Back to ${stateCode} Parks`}
+</Link>
 
       { park?.images?.length > 0 && (
         <div className="park-images">

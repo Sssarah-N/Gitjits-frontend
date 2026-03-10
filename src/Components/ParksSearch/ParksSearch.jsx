@@ -22,6 +22,7 @@ function Parks() {
       .then((res) => {
         setParks(res.data.Parks || []);
         setLoading(false);
+
       })
       .catch(() => {
         setError('There was a problem retrieving the parks data.');
@@ -97,7 +98,7 @@ function Parks() {
       <header className="parks-header">
         <h1>National Parks</h1>
         <p className="parks-subtitle">Explore America&apos;s natural treasures</p>
-        
+
         <form className="search-form" onSubmit={handleSearch}>
           <input
             type="text"
@@ -113,7 +114,7 @@ function Parks() {
             </button>
           )}
         </form>
-        
+
         {isSearching && (
           <p className="search-results">
             Found {parks.length} park{parks.length !== 1 ? 's' : ''} matching &quot;{searchQuery}&quot;
@@ -125,7 +126,8 @@ function Parks() {
         {parks.map((park) => (
           <Link
             key={park.park_code || park._id}
-            to={`/parks/${park.park_code}`}
+            to={`/countries/US/states/${Array.isArray(park.state_code) ? park.state_code[0] : park.state_code}/parks/${park.park_code}`}
+            state={{ from: 'search' }}
             className="park-card-link"
           >
             <div className="park-card">
