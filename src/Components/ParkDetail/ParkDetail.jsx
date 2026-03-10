@@ -11,6 +11,11 @@ function ParkDetail() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const convertLatLongToMapsURL = (lat, long) => {
+    const url = `https://www.google.com/maps?q=${lat}+${long}`;
+    return url.replaceAll(" ", "+");
+  }
+
   useEffect(() => {
     setLoading(true);
     setError('');
@@ -72,11 +77,22 @@ function ParkDetail() {
         </div>
       </div>
 
+      {park.description && (
+        <div className="park-directions-info">
+          <h4>Description</h4>
+          <p>{park.description}</p>
+        </div>
+      )}
+
       {park.addresses && (
         <div className="park-addresses">
           {park.addresses.filter((address) => address.type == "Physical").map((address) => (
             <div key={address.id} className="park-address">
-              <h4>Address</h4>
+              <h4>Address
+                  <a className="google-maps-link"
+                  onClick={() => window.open(convertLatLongToMapsURL(park.latitude, park.longitude), '_blank')}
+                >(View on Google Maps)</a>
+              </h4>
               { address.line1 && <p>{address.line1}</p> }
               { address.line2 && <p>{address.line2}</p> }
               { address.line3 && <p>{address.line3}</p> }
@@ -85,21 +101,22 @@ function ParkDetail() {
           ))}
         </div>
       )}
-
+      
       {park.operating_hours && Object.entries(park.operating_hours).map(([unitName, unit]) => (
-      <div key={unitName} className="park-hours">
-        <p>{unit.description}</p>
-        {unit.standardHours && (
-          <ul>
-            {Object.entries(unit.standardHours).map(([day, hours]) => (
-              <li key={day}>
-                <strong>{day.charAt(0).toUpperCase() + day.slice(1)}:</strong> {hours}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    ))}
+        <div key={unitName} className="park-hours">
+          <h4>Hours</h4>
+          <p>{unit.description}</p>
+          {unit.standardHours && (
+            <ul>
+              {Object.entries(unit.standardHours).map(([day, hours]) => (
+                <li key={day}>
+                  <strong>{day.charAt(0).toUpperCase() + day.slice(1)}:</strong> {hours}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))}
 
       
     </div>

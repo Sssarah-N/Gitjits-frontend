@@ -105,15 +105,33 @@
   border-radius: 0.5rem;
   padding: 1rem;
   overflow: clip;
+  transition: all 0.2s ease;
+
+  svg {
+    fill: black;
+  }
 
   p, h4 {
     margin: 0;
   }
-
+  
   h4 {
     background-color: #e0e0e0;
     padding: 0.5rem 1rem;
     margin: -1rem;
     margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+  }
+
+  .google-maps-link {
+    margin-left: 0.5rem;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;  
+  }
+
+  .google-maps-link:hover {
+    text-decoration: underline;
   }
 }
