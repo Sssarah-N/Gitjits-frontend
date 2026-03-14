@@ -6,6 +6,7 @@ import { BACKEND_URL } from '../../constants';
 import './ParksSearch.css';
 
 const PARKS_ENDPOINT = `${BACKEND_URL}/parks`;
+const PARKS_PER_PAGE = 50;
 
 function Parks() {
   const [error, setError] = useState('');
@@ -13,6 +14,7 @@ function Parks() {
   const [parks, setParks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Load all parks once on mount
   useEffect(() => {
@@ -29,8 +31,9 @@ function Parks() {
       });
   }, []);
 
-  // Filter as user types
+  // Filter as user types and reset page
   useEffect(() => {
+    setCurrentPage(1);
     if (!searchQuery.trim()) {
       setParks(allParks);
     } else {
@@ -46,6 +49,16 @@ function Parks() {
   }, [searchQuery, allParks]);
 
   const isSearching = searchQuery.trim().length > 0;
+
+  // Pagination calculations
+  const totalPages = Math.ceil(parks.length / PARKS_PER_PAGE);
+  const startIndex = (currentPage - 1) * PARKS_PER_PAGE;
+  const currentParks = parks.slice(startIndex, startIndex + PARKS_PER_PAGE);
+
+  const goToPage = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   if (loading) {
     return (
@@ -95,7 +108,7 @@ function Parks() {
       </header>
 
       <div className="parks-grid">
-        {parks.map((park) => (
+        {currentParks.map((park) => (
           <Link
             key={park.park_code || park._id}
             to={`/countries/US/states/${Array.isArray(park.state_code) ? park.state_code[0] : park.state_code}/parks/${park.park_code}`}
@@ -126,6 +139,42 @@ function Parks() {
           </Link>
         ))}
       </div>
+
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button
+            className="pagination-btn"
+            onClick={() => goToPage(1)}
+            disabled={currentPage === 1}
+          >
+            First
+          </button>
+          <button
+            className="pagination-btn"
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          <span className="pagination-info">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            className="pagination-btn"
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+          <button
+            className="pagination-btn"
+            onClick={() => goToPage(totalPages)}
+            disabled={currentPage === totalPages}
+          >
+            Last
+          </button>
+        </div>
+      )}
 
       {parks.length === 0 && (
         <p className="no-data">
