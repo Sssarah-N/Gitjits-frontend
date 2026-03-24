@@ -25,9 +25,16 @@ NavLink.propTypes = {
 function Navbar() {
   return (
     <nav>
-      <ul className="wrapper">
-        {PAGES.map((page) => <NavLink key={page.destination} page={page} />)}
-      </ul>
+      <div className="wrapper nav-container">
+        <ul className="nav-left">
+          {PAGES.map((page) => <NavLink key={page.destination} page={page} />)}
+        </ul>
+        <ul className="nav-right">
+          <li>
+            <Link to="/login">Login</Link>
+          </li>
+        </ul>
+      </div>
     </nav>
   );
 }
