@@ -8,6 +8,7 @@ import {
 import './App.css';
 
 import Navbar from './Components/Navbar';
+import Login from './Components/Login';
 import Countries from './Components/Countries';
 import CountryDetail from './Components/CountryDetail';
 import StateDetail from './Components/StateDetail';
@@ -19,6 +20,7 @@ function App() {
     <BrowserRouter>
       <Navbar />
       <Routes>
+        <Route path="login" element={<Login />} />
         <Route index element={<Countries />} />
         <Route path="countries" element={<Countries />} />
         <Route path="countries/:code" element={<CountryDetail />} />
