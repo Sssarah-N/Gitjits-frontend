@@ -160,3 +160,15 @@
     margin-bottom: 0;
   }
 }
+
+.park-activities {
+  margin-top: 1rem;
+}
+
+.activity-badges .meta-badge {
+  margin: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #e0f3ff;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}

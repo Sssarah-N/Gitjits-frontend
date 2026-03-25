@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useLocation} from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 import { BACKEND_URL } from '../../constants';
@@ -48,22 +48,22 @@ function ParkDetail() {
       <div className="park-detail-wrapper">
         <div className="error-message">{error}</div>
         <Link to={fromSearch ? '/parks' : `/countries/${countryCode}/states/${stateCode}`} className="back-link">
-  {fromSearch ? '← Back to All Parks' : `← Back to ${stateCode} Parks`}
-</Link>
+          {fromSearch ? '← Back to All Parks' : `← Back to ${stateCode} Parks`}
+        </Link>
       </div>
     );
   }
 
   return (
     <div className="park-detail-wrapper">
-   <Link to={fromSearch ? '/parks' : `/countries/${countryCode}/states/${stateCode}`} className="back-link">
-  {fromSearch ? '← Back to All Parks' : `← Back to ${stateCode} Parks`}
-</Link>
+      <Link to={fromSearch ? '/parks' : `/countries/${countryCode}/states/${stateCode}`} className="back-link">
+        {fromSearch ? '← Back to All Parks' : `← Back to ${stateCode} Parks`}
+      </Link>
 
-      { park?.images?.length > 0 && (
+      {park?.images?.length > 0 && (
         <div className="park-images">
-          { park.images.map((image) => (
-              <img key={image.url} src={image.url} alt={image.title} />
+          {park.images.map((image) => (
+            <img key={image.url} src={image.url} alt={image.title} />
           ))}
         </div>
       )}
@@ -79,6 +79,17 @@ function ParkDetail() {
         </div>
       </div>
 
+      {park.activities && park.activities.length > 0 && (
+        <div className="park-activities">
+          <h4>Activities</h4>
+          <div className="activity-badges">
+            {park.activities.map((activity, index) => (
+              <span key={index} className="meta-badge">{activity}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {park.description && (
         <div className="park-directions-info">
           <h4>Description</h4>
@@ -92,13 +103,13 @@ function ParkDetail() {
             {park.addresses.filter((address) => address.type == "Physical").map((address) => (
               <div key={address.id} className="park-address">
                 <h4>Address
-                    <a className="google-maps-link"
+                  <a className="google-maps-link"
                     onClick={() => window.open(convertLatLongToMapsURL(park.latitude, park.longitude), '_blank')}
                   >(View on Google Maps)</a>
                 </h4>
-                { address.line1 && <p>{address.line1}</p> }
-                { address.line2 && <p>{address.line2}</p> }
-                { address.line3 && <p>{address.line3}</p> }
+                {address.line1 && <p>{address.line1}</p>}
+                {address.line2 && <p>{address.line2}</p>}
+                {address.line3 && <p>{address.line3}</p>}
                 <p>{address.city}, {address.stateCode} {address.postalCode}</p>
               </div>
             ))}
@@ -109,29 +120,29 @@ function ParkDetail() {
           <div className="park-contact">
             {park.contacts.emailAddresses && (
               <>
-              {park.contacts.emailAddresses.map((email) => (
-                <>
-                <h4>Email {email.description && `(${email.description})`}</h4>
-                <p>{email.emailAddress}</p>
-                </>
-              ))}
+                {park.contacts.emailAddresses.map((email) => (
+                  <>
+                    <h4>Email {email.description && `(${email.description})`}</h4>
+                    <p>{email.emailAddress}</p>
+                  </>
+                ))}
               </>
             )}
             {park.contacts.phoneNumbers && (
               <>
-              {park.contacts.phoneNumbers.map((phone) => (
-                <>
-                <h4>Phone {phone.description && `(${phone.description})`}</h4>
-                <p>{phone.phoneNumber}</p>
-                </>
-              ))}
+                {park.contacts.phoneNumbers.map((phone) => (
+                  <>
+                    <h4>Phone {phone.description && `(${phone.description})`}</h4>
+                    <p>{phone.phoneNumber}</p>
+                  </>
+                ))}
               </>
             )}
           </div>
         )}
 
       </div>
-      
+
       {park.operating_hours && Object.entries(park.operating_hours).map(([unitName, unit]) => (
         <div key={unitName} className="park-hours">
           <h4>Hours</h4>
@@ -148,7 +159,7 @@ function ParkDetail() {
         </div>
       ))}
 
-      
+
     </div>
   );
 }
