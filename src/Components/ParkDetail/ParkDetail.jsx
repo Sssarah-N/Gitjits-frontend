@@ -76,6 +76,8 @@ function ParkDetail() {
           {park.country_code && <span className="meta-badge">Country: {park.country_code}</span>}
           {park.type && <span className="meta-badge">Type: {park.type}</span>}
           {park.area && <span className="meta-badge">Area: {park.area}</span>}
+          {park.designation && <span className="meta-badge">{park.designation}</span>}
+
         </div>
       </div>
 
@@ -118,25 +120,35 @@ function ParkDetail() {
 
         {park.contacts && (
           <div className="park-contact">
-            {park.contacts.emailAddresses && (
-              <>
-                {park.contacts.emailAddresses.map((email) => (
-                  <>
+
+            {park.contacts.emailAddresses && park.contacts.emailAddresses.length > 0 && (
+              <div>
+                {park.contacts.emailAddresses.map((email, index) => (
+                  <div key={`email-${index}`}>
                     <h4>Email {email.description && `(${email.description})`}</h4>
-                    <p>{email.emailAddress}</p>
-                  </>
+                    <p>
+                      <a href={`mailto:${email.emailAddress}`}>
+                        {email.emailAddress}
+                      </a>
+                    </p>
+                  </div>
                 ))}
-              </>
+              </div>
             )}
-            {park.contacts.phoneNumbers && (
-              <>
-                {park.contacts.phoneNumbers.map((phone) => (
-                  <>
+
+            {park.contacts.phoneNumbers && park.contacts.phoneNumbers.length > 0 && (
+              <div>
+                {park.contacts.phoneNumbers.map((phone, index) => (
+                  <div key={`phone-${index}`}>
                     <h4>Phone {phone.description && `(${phone.description})`}</h4>
-                    <p>{phone.phoneNumber}</p>
-                  </>
+                    <p>
+                      <a href={`tel:${phone.phoneNumber.replace(/[^0-9+]/g, '')}`}>
+                        {phone.phoneNumber}
+                      </a>
+                    </p>
+                  </div>
                 ))}
-              </>
+              </div>
             )}
           </div>
         )}

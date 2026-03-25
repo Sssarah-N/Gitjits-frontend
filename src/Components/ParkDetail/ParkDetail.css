@@ -143,21 +143,37 @@
 }
 
 .park-contact {
-  display: grid;
-  width: fit-content;
-  height: fit-content;
-  margin-top: 1rem;
-  grid-template-columns: auto auto;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
   gap: 1rem;
+  margin-top: 1rem;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
 
   h4 {
     margin: 0;
     padding: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
   }
 
   p {
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0;
+    font-size: 0.9rem;
+
+    a {
+      color: #1d4ed8; /* link color */
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
   }
 }
 
