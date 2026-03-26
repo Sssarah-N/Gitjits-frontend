@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import { BACKEND_URL } from '../../constants';
 import './ParksSearch.css';
 
 const PARKS_ENDPOINT = `${BACKEND_URL}/parks`;
-const PARKS_PER_PAGE = 50;
+const PARKS_PER_PAGE = 12;
 
 function Parks() {
   const [error, setError] = useState('');
   const [allParks, setAllParks] = useState([]);
   const [parks, setParks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  // Store search query in URL (?q=xxx) so browser back button preserves search state
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get('q') || '';
+  const setSearchQuery = (value) => {
+    if (value) {
+      setSearchParams({ q: value });
+    } else {
+      setSearchParams({});
+    }
+  };
   const [currentPage, setCurrentPage] = useState(1);
 
   // Load all parks once on mount
@@ -118,7 +127,12 @@ function Parks() {
             <div className="park-card">
               {park.images && park.images[0] && (
                 <div className="park-image">
-                  <img src={park.images[0].url} alt={park.name} />
+                  <img 
+                    src={park.images[0].url} 
+                    alt={park.name}
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </div>
               )}
               <div className="park-content">
