@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { BACKEND_URL } from '../../constants';
 import './CountryDetail.css';
+import USMap from '../USMap/USMap';
 
 function CountryDetail() {
   const { code } = useParams();
@@ -65,6 +66,8 @@ function CountryDetail() {
           </div>
         )}
       </div>
+
+      <USMap onStateClick={() => {console.log('state clicked')}} />
 
       <div className="states-section">
         <h2>States / Provinces</h2>

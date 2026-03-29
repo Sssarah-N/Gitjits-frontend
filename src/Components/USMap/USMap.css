@@ -1,0 +1,19 @@
+.geo-state {
+    fill: #ECEFF1;
+    outline: none;
+    stroke: #26771B;
+    stroke-width: 0.6;
+    cursor: pointer;
+
+  &:hover {
+    fill: #A4D0A2;
+    outline: none;
+    cursor: pointer;
+  }
+
+  &:active {
+    fill: #4FA153;
+    outline: none;
+    cursor: pointer;
+  }
+}
