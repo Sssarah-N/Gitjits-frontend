@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import { BACKEND_URL } from '../../constants';
@@ -8,6 +8,7 @@ import USMap from '../USMap/USMap';
 
 function CountryDetail() {
   const { code } = useParams();
+  const navigate = useNavigate();
   const [error, setError] = useState('');
   const [country, setCountry] = useState(null);
   const [states, setStates] = useState([]);
@@ -49,6 +50,10 @@ function CountryDetail() {
     );
   }
 
+  const handleMapStateClick = (stateCode) => {
+    navigate(`/countries/${code}/states/${stateCode}`);
+  };
+
   return (
     <div className="country-detail-wrapper">
       <Link to="/countries" className="back-link">← Back to Countries</Link>
@@ -67,7 +72,7 @@ function CountryDetail() {
         )}
       </div>
 
-      <USMap onStateClick={() => {console.log('state clicked')}} />
+      <USMap onStateClick={(stateCode) => {handleMapStateClick(stateCode)}} />
 
       <div className="states-section">
         <h2>States / Provinces</h2>
