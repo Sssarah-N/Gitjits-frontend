@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { BACKEND_URL } from '../../constants';
 import './Login.css';
 
@@ -66,6 +67,13 @@ function Login() {
             {message}
           </div>
         )}
+        
+        <div className="register-link-container">
+          <p>Don&apos;t have an account?</p>
+          <Link to="/register" className="register-link">
+            Create an account
+          </Link>
+        </div>
       </div>
     </div>
   );
