@@ -81,11 +81,11 @@ function StateDetail() {
           <div className="cities-grid">
             {cities.map((city, index) => (
               <div key={`${city.name}-${index}`} className="city-card">
-              <h3>{city.name}</h3>
-              <div className="city-details">
-                <p><strong>State:</strong> {city.state_code}</p>
+                <h3>{city.name}</h3>
+                <div className="city-details">
+                  <p><strong>State:</strong> {city.state_code}</p>
+                </div>
               </div>
-            </div>
             ))}
           </div>
         ) : (
@@ -94,7 +94,7 @@ function StateDetail() {
       </div>
 
       <div className="parks-section">
-        <h2>Parks</h2>
+        <h2>Parks ({parks.length}) </h2>
 
         {parks.length > 0 ? (
           <div className="parks-grid">

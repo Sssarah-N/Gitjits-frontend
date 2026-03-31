@@ -18,7 +18,7 @@ function CountryDetail() {
   const handleMapStateClick = (stateCode) => {
     navigate(`/countries/${code}/states/${stateCode}`);
   };
-  
+
   useEffect(() => {
     setLoading(true);
     setError('');
@@ -115,6 +115,7 @@ function CountryDetail() {
                     {state.population && (
                       <p><strong>Population:</strong> {state.population.toLocaleString()}</p>
                     )}
+                    <p><strong>Parks:</strong> {parkCounts[state.state_code] || 0}</p>
                   </div>
                 </div>
               </Link>
