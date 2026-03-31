@@ -13,7 +13,12 @@ function CountryDetail() {
   const [country, setCountry] = useState(null);
   const [states, setStates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [parkCounts, setParkCounts] = useState({});
 
+  const handleMapStateClick = (stateCode) => {
+    navigate(`/countries/${code}/states/${stateCode}`);
+  };
+  
   useEffect(() => {
     setLoading(true);
     setError('');
@@ -22,9 +27,27 @@ function CountryDetail() {
       axios.get(`${BACKEND_URL}/countries/${code}`),
       axios.get(`${BACKEND_URL}/countries/${code}/states`)
     ])
-      .then(([countryRes, statesRes]) => {
+      .then(async ([countryRes, statesRes]) => {
+        const statesData = statesRes.data.States || [];
+
         setCountry(countryRes.data.Country);
-        setStates(statesRes.data.States || []);
+        setStates(statesData);
+        const counts = {};
+
+        await Promise.all(
+          statesData.map(async (state) => {
+            try {
+              const res = await axios.get(
+                `${BACKEND_URL}/parks/state/${state.state_code}`
+              );
+              counts[state.state_code] = res.data.Parks.length;
+            } catch {
+              counts[state.state_code] = 0;
+            }
+          })
+        );
+
+        setParkCounts(counts);
         setLoading(false);
       })
       .catch(() => {
@@ -50,10 +73,6 @@ function CountryDetail() {
     );
   }
 
-  const handleMapStateClick = (stateCode) => {
-    navigate(`/countries/${code}/states/${stateCode}`);
-  };
-
   return (
     <div className="country-detail-wrapper">
       <Link to="/countries" className="back-link">← Back to Countries</Link>
@@ -72,7 +91,10 @@ function CountryDetail() {
         )}
       </div>
 
-      <USMap onStateClick={(stateCode) => {handleMapStateClick(stateCode)}} />
+      <USMap
+        onStateClick={handleMapStateClick}
+        parkCounts={parkCounts}
+      />
 
       <div className="states-section">
         <h2>States / Provinces</h2>
