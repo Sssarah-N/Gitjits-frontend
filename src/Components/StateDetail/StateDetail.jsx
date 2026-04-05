@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 
 import { BACKEND_URL } from '../../constants';
+import StateMap from '../StateMap/StateMap';
 import './StateDetail.css';
 
 
@@ -54,6 +55,12 @@ function StateDetail() {
     );
   }
 
+  const parkCoords = parks.map((park) => ({
+    latitude: park.latitude,
+    longitude: park.longitude,
+    park_code: park.park_code,
+  }));
+
   return (
     <div className="state-detail-wrapper">
       <Link to={`/countries/${countryCode}`} className="back-link">
@@ -73,6 +80,8 @@ function StateDetail() {
           </div>
         )}
       </div>
+
+      <StateMap stateCode={stateCode} parkCoords={parkCoords} />
 
       <div className="cities-section">
         <h2>Cities</h2>

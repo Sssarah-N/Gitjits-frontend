@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import PropTypes from 'prop-types';
 import './USMap.css';
-import statesGeo from './states-geo.json';
+import statesGeo from '../../geodata/states-geo.json';
 
 export default function USMap({ onStateClick, parkCounts }) {
   const [tooltip, setTooltip] = useState('');
@@ -30,7 +30,7 @@ export default function USMap({ onStateClick, parkCounts }) {
               return (
                 <Geography
                   key={geo.rsmKey}
-                  className="geo-state"
+                  className="geo-state clickable"
                   geography={geo}
                   onClick={() => onStateClick(code)}
 

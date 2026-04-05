@@ -3,15 +3,18 @@
     outline: none;
     stroke: #26771B;
     stroke-width: 0.6;
-    cursor: pointer;
 
-  &:hover {
+  &.clickable {
+    cursor: pointer;
+  }
+
+  &.clickable:hover {
     fill: #A4D0A2;
     outline: none;
     cursor: pointer;
   }
 
-  &:active {
+  &.clickable:active {
     fill: #4FA153;
     outline: none;
     cursor: pointer;
