@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps';
+import { ComposableMap, Geographies, ZoomableGroup, Geography, Marker } from 'react-simple-maps';
 import { geoMercator } from 'd3-geo';
 import { feature } from 'topojson-client';
 import PropTypes from 'prop-types';
@@ -27,34 +27,41 @@ export default function StateMap({ stateCode, parkCoords }) {
   }, [code]);
 
   return (
-    <div style={{ width: '100%', maxWidth: 900, margin: '0 auto' }}>
+    <div className="state-map-container">
       <ComposableMap projection={projection} width={W} height={H}>
-        <Geographies
-          geography={statesGeo}
-          parseGeographies={(geos) =>
-            geos.filter((g) => g.properties.code === code)
-          }
+        <ZoomableGroup
+          center={[0, 0]}
+          zoom={1}
+          minZoom={0.5}
+          maxZoom={8}
         >
-          {({ geographies }) =>
-            geographies.map((geo) => (
-              <Geography key={geo.rsmKey} 
-                geography={geo} 
-                className="geo-state" 
-              />
-            ))
-          }
-        </Geographies>
-        { parkCoords.map(({ latitude, longitude, park_code }) => (
-          <Marker key={park_code} 
-            coordinates={[longitude, latitude]}
-            className="park-marker"
-            onClick={() => {
-              console.log(`Clicked on park ${park_code}`);
-            }}
+          <Geographies
+            geography={statesGeo}
+            parseGeographies={(geos) =>
+              geos.filter((g) => g.properties.code === code)
+            }
           >
-            <circle className="park-marker" />
-          </Marker>
-        ))}
+            {({ geographies }) =>
+              geographies.map((geo) => (
+                <Geography key={geo.rsmKey} 
+                  geography={geo} 
+                  className="geo-state" 
+                />
+              ))
+            }
+          </Geographies>
+          { parkCoords.map(({ latitude, longitude, park_code }) => (
+            <Marker key={park_code} 
+              coordinates={[longitude, latitude]}
+              className="park-marker"
+              onClick={() => {
+                console.log(`Clicked on park ${park_code}`);
+              }}
+            >
+              <circle className="park-marker" />
+            </Marker>
+          ))}
+        </ZoomableGroup>
       </ComposableMap>
     </div>
   );
