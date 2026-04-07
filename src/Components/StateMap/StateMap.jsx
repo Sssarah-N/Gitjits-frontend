@@ -6,8 +6,10 @@ import PropTypes from 'prop-types';
 import statesGeo from '../../geodata/states-geo.json';
 import '../USMap/USMap.css';
 import './StateMap.css';
+import { useNavigate } from 'react-router-dom';
 
-export default function StateMap({ stateCode, parkCoords}) {
+export default function StateMap({ stateCode, parkCoords, countryCode }) {
+  const navigate = useNavigate();
   const [tooltip, setTooltip] = useState('');
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const code = stateCode?.toUpperCase();
@@ -56,6 +58,9 @@ export default function StateMap({ stateCode, parkCoords}) {
             <Marker
               key={park_code}
               coordinates={[longitude, latitude]}
+              onClick={() =>
+                navigate(`/countries/${countryCode}/states/${stateCode}/parks/${park_code}`)
+              }
               onMouseEnter={(e) => {
                 setTooltip(park_name);
                 setPosition({ x: e.clientX, y: e.clientY });

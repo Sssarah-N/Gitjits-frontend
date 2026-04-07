@@ -79,7 +79,7 @@ function StateDetail() {
         )}
       </div>
 
-      <StateMap stateCode={stateCode} parkCoords={parkCoords}/>
+      <StateMap stateCode={stateCode} parkCoords={parkCoords} countryCode={countryCode} />
 
       <div className="parks-section">
         <h2>Parks ({parks.length}) </h2>
