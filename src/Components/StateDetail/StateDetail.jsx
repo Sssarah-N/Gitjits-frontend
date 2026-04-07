@@ -11,7 +11,6 @@ function StateDetail() {
   const { countryCode, stateCode } = useParams();
   const [error, setError] = useState('');
   const [state, setState] = useState(null);
-  const [cities, setCities] = useState([]);
   const [parks, setParks] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,12 +20,10 @@ function StateDetail() {
 
     Promise.all([
       axios.get(`${BACKEND_URL}/countries/${countryCode}/states/${stateCode}`),
-      axios.get(`${BACKEND_URL}/countries/${countryCode}/states/${stateCode}/cities`),
       axios.get(`${BACKEND_URL}/parks/state/${stateCode}`).catch(() => ({ data: { Parks: [] } }))
     ])
-      .then(([stateRes, citiesRes, parksRes]) => {
+      .then(([stateRes, parksRes]) => {
         setState(stateRes.data.State);
-        setCities(citiesRes.data.Cities || []);
         setParks(parksRes.data.Parks || []);
         setLoading(false);
       })
@@ -81,26 +78,7 @@ function StateDetail() {
         )}
       </div>
 
-      <StateMap stateCode={stateCode} parkCoords={parkCoords} />
-
-      <div className="cities-section">
-        <h2>Cities</h2>
-
-        {cities.length > 0 ? (
-          <div className="cities-grid">
-            {cities.map((city, index) => (
-              <div key={`${city.name}-${index}`} className="city-card">
-                <h3>{city.name}</h3>
-                <div className="city-details">
-                  <p><strong>State:</strong> {city.state_code}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="no-data">No cities found for this state.</p>
-        )}
-      </div>
+      <StateMap stateCode={stateCode} parkCoords={parkCoords} />s
 
       <div className="parks-section">
         <h2>Parks ({parks.length}) </h2>
