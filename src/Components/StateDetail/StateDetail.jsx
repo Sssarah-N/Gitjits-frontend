@@ -56,6 +56,7 @@ function StateDetail() {
     latitude: park.latitude,
     longitude: park.longitude,
     park_code: park.park_code,
+    park_name: park.name,
   }));
 
   return (
@@ -78,7 +79,7 @@ function StateDetail() {
         )}
       </div>
 
-      <StateMap stateCode={stateCode} parkCoords={parkCoords} />s
+      <StateMap stateCode={stateCode} parkCoords={parkCoords}/>
 
       <div className="parks-section">
         <h2>Parks ({parks.length}) </h2>

@@ -63,5 +63,5 @@ export default function USMap({ onStateClick, parkCounts }) {
 
 USMap.propTypes = {
   onStateClick: PropTypes.func.isRequired,
-  parkCounts: PropTypes.object // 🔧 UPDATED
+  parkCounts: PropTypes.object
 };
