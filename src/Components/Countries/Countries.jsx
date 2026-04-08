@@ -60,6 +60,9 @@ function Countries() {
             <p>Total Parks: {statistics.total_parks || 0}</p>
           </div>
         )}
+        <Link to="/random" className="random-park-link">
+          🎰 Feeling Lucky? Discover a Random Park!
+        </Link>
       </header>
       
       <div className="countries-grid">
