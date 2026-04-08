@@ -15,6 +15,7 @@ import CountryDetail from './Components/CountryDetail';
 import StateDetail from './Components/StateDetail';
 import ParkDetail from './Components/ParkDetail';
 import ParksSearch from './Components/ParksSearch';
+import RandomPark from './Components/RandomPark';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="countries/:countryCode/states/:stateCode" element={<StateDetail />} />
         <Route path="/countries/:countryCode/states/:stateCode/parks/:parkCode" element={<ParkDetail />} />
         <Route path="parks" element={<ParksSearch />} />
+        <Route path="random" element={<RandomPark />} />
       </Routes>
     </BrowserRouter>
   );
