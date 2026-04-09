@@ -6,7 +6,7 @@
 
 html {
   --poppy: hsla(356, 74%, 52%, 1);
-  --cambridge-blue: hsla(132, 27%, 63%, 1);
+  --cambridge-blue: #4CAF50;
   --lemon-chiffon: hsla(58, 74%, 85%, 1);
   --buff: hsla(27, 64%, 65%, 1);
   --bistre: hsla(10, 31%, 19%, 1);

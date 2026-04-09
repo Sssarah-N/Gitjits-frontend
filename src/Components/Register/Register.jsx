@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { BACKEND_URL } from '../../constants';
 import './Register.css';
 
@@ -10,7 +11,9 @@ function Register() {
   const [formData, setFormData] = useState({});
   const [roleOptions, setRoleOptions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     axios.get(REGISTER_FORM_ENDPOINT)
@@ -63,7 +66,25 @@ function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Submitting:', formData);
+    setSubmitting(true);
+    setError('');
+    setMessage('');
+
+    const registerUrl = `${BACKEND_URL}${formDefinition.submit_url}`;
+    
+    axios.post(registerUrl, formData)
+      .then((response) => {
+        console.log('Registration successful:', response.data);
+        setMessage('Registration successful! You can now login.');
+        setFormData({});
+        setSubmitting(false);
+      })
+      .catch((error) => {
+        console.error('Registration error:', error);
+        const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
+        setError(errorMessage);
+        setSubmitting(false);
+      });
   };
 
   return (
@@ -110,10 +131,27 @@ function Register() {
             </div>
           ))}
           
-          <button type="submit" className="register-button">
-            Register
+          <button type="submit" className="register-button" disabled={submitting}>
+            {submitting ? 'Registering...' : 'Register'}
           </button>
         </form>
+
+        {message && (
+          <div className="success-message">
+            {message}
+            <div style={{ marginTop: '10px' }}>
+              <Link to="/login" className="login-link">
+                Go to Login
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
       </div>
     </div>
   );

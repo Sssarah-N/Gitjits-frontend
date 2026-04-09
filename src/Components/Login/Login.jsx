@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '../../constants';
 import './Login.css';
 
 const LOGIN_ENDPOINT = `${BACKEND_URL}/auth/login`;
 
 function Login() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -20,8 +21,13 @@ function Login() {
     axios.post(LOGIN_ENDPOINT, { username, password })
       .then((response) => {
         console.log('Login response:', response.data);
-        setMessage('Login successful!');
+        setMessage('Login successful! Redirecting...');
         setLoading(false);
+        
+        // Redirect to main page after 1 second
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
       })
       .catch((error) => {
         console.error('Login error:', error);
