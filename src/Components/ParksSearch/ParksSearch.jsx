@@ -13,7 +13,6 @@ function Parks() {
   const [allParks, setAllParks] = useState([]);
   const [parks, setParks] = useState([]);
   const [loading, setLoading] = useState(true);
-  // Store search query in URL (?q=xxx) so browser back button preserves search state
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get('q') || '';
   const setSearchQuery = (value) => {
@@ -24,6 +23,8 @@ function Parks() {
     }
   };
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedType, setSelectedType] = useState('');
+  const [searchMode, setSearchMode] = useState('name');
 
   // Load all parks once on mount
   useEffect(() => {
@@ -43,10 +44,12 @@ function Parks() {
   // Filter as user types and reset page
   useEffect(() => {
     setCurrentPage(1);
-    if (!searchQuery.trim()) {
+    const q = searchQuery.trim().toLowerCase();
+    const t = selectedType.trim().toLowerCase();
+
+    if (!q && !t) {
       setParks(allParks);
-    } else {
-      const q = searchQuery.toLowerCase();
+    } else if (searchMode === 'name' && q) {
       setParks(allParks.filter(park => {
         const name = park.name?.toLowerCase() || '';
         const fullName = park.full_name?.toLowerCase() || '';
@@ -54,10 +57,14 @@ function Parks() {
           name.split(' ').some(word => word.startsWith(q)) ||
           fullName.split(' ').some(word => word.startsWith(q));
       }));
+    } else if (searchMode === 'type' && t) {
+      setParks(allParks.filter(park =>
+        park.type?.toLowerCase().includes(t)
+      ));
     }
-  }, [searchQuery, allParks]);
+  }, [searchQuery, selectedType, searchMode, allParks]);
 
-  const isSearching = searchQuery.trim().length > 0;
+  const isSearching = searchQuery.trim().length > 0 || selectedType.trim().length > 0;
 
   // Pagination calculations
   const totalPages = Math.ceil(parks.length / PARKS_PER_PAGE);
@@ -92,26 +99,34 @@ function Parks() {
         <p className="parks-subtitle">Explore America&apos;s natural treasures</p>
 
         <form className="search-form">
-        <input
-          type="text"
-          placeholder="Search parks by name..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
-        />
-        <button type="submit" className="search-btn" onClick={(e) => e.preventDefault()}>
-          Search
-        </button>
-        {isSearching && (
-          <button type="button" className="clear-btn" onClick={() => setSearchQuery('')}>
-            Clear
+          <select
+            value={searchMode}
+            onChange={(e) => { setSearchMode(e.target.value); setSearchQuery(''); setSelectedType(''); }}
+            className="search-select"
+          >
+            <option value="name">Search by Name</option>
+            <option value="type">Search by Type</option>
+          </select>
+          <input
+            type="text"
+            placeholder={searchMode === 'name' ? 'Search parks by name...' : 'Search by park type...'}
+            value={searchMode === 'name' ? searchQuery : selectedType}
+            onChange={(e) => searchMode === 'name' ? setSearchQuery(e.target.value) : setSelectedType(e.target.value)}
+            className="search-input"
+          />
+          <button type="submit" className="search-btn" onClick={(e) => e.preventDefault()}>
+            Search
           </button>
-        )}
-      </form>
+          {isSearching && (
+            <button type="button" className="clear-btn" onClick={() => { setSearchQuery(''); setSelectedType(''); }}>
+              Clear
+            </button>
+          )}
+        </form>
 
         {isSearching && (
           <p className="search-results">
-            Found {parks.length} park{parks.length !== 1 ? 's' : ''} matching &quot;{searchQuery}&quot;
+            Found {parks.length} park{parks.length !== 1 ? 's' : ''} matching &quot;{searchQuery || selectedType}&quot;
           </p>
         )}
       </header>
@@ -127,8 +142,8 @@ function Parks() {
             <div className="park-card">
               {park.images && park.images[0] && (
                 <div className="park-image">
-                  <img 
-                    src={park.images[0].url} 
+                  <img
+                    src={park.images[0].url}
                     alt={park.name}
                     loading="lazy"
                     decoding="async"
