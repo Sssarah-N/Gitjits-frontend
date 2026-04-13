@@ -23,7 +23,6 @@ function Parks() {
     }
   };
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedType, setSelectedType] = useState('');
   const [searchMode, setSearchMode] = useState('name');
 
   // Load all parks once on mount
@@ -45,11 +44,10 @@ function Parks() {
   useEffect(() => {
     setCurrentPage(1);
     const q = searchQuery.trim().toLowerCase();
-    const t = selectedType.trim().toLowerCase();
 
-    if (!q && !t) {
+    if (!q) {
       setParks(allParks);
-    } else if (searchMode === 'name' && q) {
+    } else if (searchMode === 'name') {
       setParks(allParks.filter(park => {
         const name = park.name?.toLowerCase() || '';
         const fullName = park.full_name?.toLowerCase() || '';
@@ -57,14 +55,18 @@ function Parks() {
           name.split(' ').some(word => word.startsWith(q)) ||
           fullName.split(' ').some(word => word.startsWith(q));
       }));
-    } else if (searchMode === 'type' && t) {
+    } else if (searchMode === 'type') {
       setParks(allParks.filter(park =>
-        park.type?.toLowerCase().includes(t)
+        park.designation?.toLowerCase().includes(q)
+      ));
+    } else if (searchMode === 'activity') {
+      setParks(allParks.filter(park =>
+        park.activities?.some(a => a.toLowerCase().includes(q))
       ));
     }
-  }, [searchQuery, selectedType, searchMode, allParks]);
+  }, [searchQuery, searchMode, allParks]);
 
-  const isSearching = searchQuery.trim().length > 0 || selectedType.trim().length > 0;
+  const isSearching = searchQuery.trim().length > 0;
 
   // Pagination calculations
   const totalPages = Math.ceil(parks.length / PARKS_PER_PAGE);
@@ -101,24 +103,29 @@ function Parks() {
         <form className="search-form">
           <select
             value={searchMode}
-            onChange={(e) => { setSearchMode(e.target.value); setSearchQuery(''); setSelectedType(''); }}
+            onChange={(e) => { setSearchMode(e.target.value); setSearchQuery(''); }}
             className="search-select"
           >
             <option value="name">Search by Name</option>
             <option value="type">Search by Type</option>
+            <option value="activity">Search by Activity</option>
           </select>
           <input
             type="text"
-            placeholder={searchMode === 'name' ? 'Search parks by name...' : 'Search by park type...'}
-            value={searchMode === 'name' ? searchQuery : selectedType}
-            onChange={(e) => searchMode === 'name' ? setSearchQuery(e.target.value) : setSelectedType(e.target.value)}
+            placeholder={
+              searchMode === 'name' ? 'Search parks by name...' :
+              searchMode === 'type' ? 'Search by park type...' :
+              'Search by activity...'
+            }
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
           />
           <button type="submit" className="search-btn" onClick={(e) => e.preventDefault()}>
             Search
           </button>
           {isSearching && (
-            <button type="button" className="clear-btn" onClick={() => { setSearchQuery(''); setSelectedType(''); }}>
+            <button type="button" className="clear-btn" onClick={() => { setSearchQuery(''); }}>
               Clear
             </button>
           )}
@@ -126,7 +133,7 @@ function Parks() {
 
         {isSearching && (
           <p className="search-results">
-            Found {parks.length} park{parks.length !== 1 ? 's' : ''} matching &quot;{searchQuery || selectedType}&quot;
+            Found {parks.length} park{parks.length !== 1 ? 's' : ''} matching &quot;{searchQuery}&quot;
           </p>
         )}
       </header>
