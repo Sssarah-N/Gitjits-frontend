@@ -1,0 +1,84 @@
+.profile-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.profile-card {
+  background: white;
+  border: 2px solid #4CAF50;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+}
+
+.profile-card h1 {
+  margin-top: 0;
+  margin-bottom: 30px;
+  color: #2e7d32;
+  text-align: center;
+  font-size: 2.5rem;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.info-group:last-child {
+  border-bottom: none;
+}
+
+.info-group label {
+  color: #2e7d32;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-group p {
+  margin: 0;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.role-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  width: fit-content;
+}
+
+.logout-button {
+  width: 100%;
+  padding: 12px;
+  background: white;
+  color: #c62828;
+  border: 2px solid #c62828;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+  background: #c62828;
+  color: white;
+}

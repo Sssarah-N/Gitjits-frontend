@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const PAGES = [
   { label: 'Countries', destination: '/countries' },
@@ -23,6 +23,15 @@ NavLink.propTypes = {
 };
 
 function Navbar() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if user is logged in
+    const user = localStorage.getItem('user');
+    setIsLoggedIn(!!user);
+  }, [location]);
+
   return (
     <nav>
       <div className="wrapper nav-container">
@@ -31,7 +40,11 @@ function Navbar() {
         </ul>
         <ul className="nav-right">
           <li>
-            <Link to="/login">Login</Link>
+            {isLoggedIn ? (
+              <Link to="/profile">Profile</Link>
+            ) : (
+              <Link to="/login">Login</Link>
+            )}
           </li>
         </ul>
       </div>

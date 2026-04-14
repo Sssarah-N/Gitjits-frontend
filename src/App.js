@@ -10,6 +10,7 @@ import './App.css';
 import Navbar from './Components/Navbar';
 import Login from './Components/Login';
 import Register from './Components/Register';
+import Profile from './Components/Profile';
 import Countries from './Components/Countries';
 import CountryDetail from './Components/CountryDetail';
 import StateDetail from './Components/StateDetail';
@@ -24,6 +25,7 @@ function App() {
       <Routes>
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="profile" element={<Profile />} />
         <Route index element={<Countries />} />
         <Route path="countries" element={<Countries />} />
         <Route path="countries/:code" element={<CountryDetail />} />

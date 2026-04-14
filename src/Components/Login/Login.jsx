@@ -21,12 +21,24 @@ function Login() {
     axios.post(LOGIN_ENDPOINT, { username, password })
       .then((response) => {
         console.log('Login response:', response.data);
+        
+        // Save user data and token to localStorage
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+        }
+        if (response.data.user) {
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+        } else {
+          // If no user object in response, store username
+          localStorage.setItem('user', JSON.stringify({ username }));
+        }
+        
         setMessage('Login successful! Redirecting...');
         setLoading(false);
         
-        // Redirect to main page after 1 second
+        // Redirect to profile page after 1 second
         setTimeout(() => {
-          navigate('/');
+          navigate('/profile');
         }, 1000);
       })
       .catch((error) => {
