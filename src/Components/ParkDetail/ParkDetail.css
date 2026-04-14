@@ -90,6 +90,38 @@
   overflow-x: scroll;
   padding-bottom: 0.5rem;
   border-radius: 0.5rem;
+
+  img {
+    cursor: pointer;
+  }
+}
+
+.enlarged-image-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+  }
+
+  button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+  }
 }
 
 .park-address-content-container {

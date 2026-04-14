@@ -13,6 +13,8 @@ function ParkDetail() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const [enlargedImage, setEnlargedImage] = useState(null);
+
   const convertLatLongToMapsURL = (lat, long) => {
     const url = `https://www.google.com/maps?q=${lat}+${long}`;
     return url.replaceAll(" ", "+");
@@ -63,8 +65,17 @@ function ParkDetail() {
       {park?.images?.length > 0 && (
         <div className="park-images">
           {park.images.map((image) => (
-            <img key={image.url} src={image.url} alt={image.title} />
+            <img key={image.url} src={image.url} alt={image.title} 
+              onClick={() => setEnlargedImage(image.url)}
+            />
           ))}
+        </div>
+      )}
+
+      { enlargedImage && (
+        <div className="enlarged-image-container">
+          <img src={enlargedImage} alt="Enlarged" />
+          <button onClick={() => setEnlargedImage(null)}>Close</button>
         </div>
       )}
 
