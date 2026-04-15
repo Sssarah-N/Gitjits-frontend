@@ -142,7 +142,7 @@ function Parks() {
         {currentParks.map((park) => (
           <Link
             key={park.park_code || park._id}
-            to={`/countries/US/states/${Array.isArray(park.state_code) ? park.state_code[0] : park.state_code}/parks/${park.park_code}`}
+            to={`/countries/${park.country_code || 'USA'}/states/${Array.isArray(park.state_code) ? park.state_code[0] : park.state_code}/parks/${park.park_code}`}
             state={{ from: 'search' }}
             className="park-card-link"
           >
