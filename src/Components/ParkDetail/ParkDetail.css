@@ -209,6 +209,92 @@
   }
 }
 
+.park-title-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.park-title-row h1 {
+  margin: 0;
+}
+
+.save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: 2px solid #e57373;
+  border-radius: 2rem;
+  color: #e57373;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.save-btn svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  fill: #e57373;
+  flex-shrink: 0;
+  transition: fill 0.2s ease, transform 0.2s ease;
+}
+
+.save-btn:hover:not(:disabled) {
+  background: #fce4ec;
+  border-color: #c62828;
+  color: #c62828;
+}
+
+.save-btn:hover:not(:disabled) svg {
+  fill: #c62828;
+  transform: scale(1.15);
+}
+
+.save-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.save-btn--saved {
+  background: #e57373;
+  color: white;
+  border-color: #e57373;
+}
+
+.save-btn--saved svg {
+  fill: white;
+}
+
+.save-btn--saved:hover:not(:disabled) {
+  background: #c62828;
+  border-color: #c62828;
+  color: white;
+}
+
+.save-btn--saved:hover:not(:disabled) svg {
+  fill: white;
+}
+
+.save-btn:disabled:not(.save-btn--saved) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.save-message {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2e7d32;
+  margin: 0.3rem 0 0;
+}
+
+.save-message--error {
+  color: #c62828;
+}
+
 .park-activities {
   margin-top: 1rem;
 }

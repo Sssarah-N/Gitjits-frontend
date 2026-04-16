@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import { BACKEND_URL } from '../../constants';
@@ -7,6 +7,7 @@ import './ParkDetail.css';
 
 function ParkDetail() {
   const location = useLocation();
+  const navigate = useNavigate();
   const fromSearch = location.state?.from === 'search';
   const { countryCode, stateCode, parkCode } = useParams();
   const [park, setPark] = useState(null);
@@ -14,11 +15,64 @@ function ParkDetail() {
   const [loading, setLoading] = useState(true);
 
   const [enlargedImage, setEnlargedImage] = useState(null);
+  const [saved, setSaved] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
 
   const convertLatLongToMapsURL = (lat, long) => {
     const url = `https://www.google.com/maps?q=${lat}+${long}`;
     return url.replaceAll(" ", "+");
   }
+
+  const handleSave = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    setSaveLoading(true);
+    setSaveMessage('');
+
+    if (saved) {
+      axios
+        .delete(
+          `${BACKEND_URL}/auth/me/saved-parks/${parkCode}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .then(() => {
+          setSaved(false);
+          setSaveMessage('Park removed.');
+          setTimeout(() => setSaveMessage(''), 3000);
+        })
+        .catch(() => {
+          setSaveMessage('Could not remove park. Please try again.');
+          setTimeout(() => setSaveMessage(''), 3000);
+        })
+        .finally(() => {
+          setSaveLoading(false);
+        });
+    } else {
+      axios
+        .post(
+          `${BACKEND_URL}/auth/me/saved-parks`,
+          { park_code: parkCode },
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .then(() => {
+          setSaved(true);
+          setSaveMessage('Park saved!');
+          setTimeout(() => setSaveMessage(''), 3000);
+        })
+        .catch(() => {
+          setSaveMessage('Could not save park. Please try again.');
+          setTimeout(() => setSaveMessage(''), 3000);
+        })
+        .finally(() => {
+          setSaveLoading(false);
+        });
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -80,7 +134,32 @@ function ParkDetail() {
       )}
 
       <div className="page-header">
-        <h1>{park?.name || parkCode}</h1>
+        <div className="park-title-row">
+          <h1>{park?.name || parkCode}</h1>
+          <button
+            className={`save-btn${saved ? ' save-btn--saved' : ''}`}
+            onClick={handleSave}
+            disabled={saveLoading}
+            aria-label={saved ? 'Remove from saved parks' : 'Save park'}
+            title={saved ? 'Remove from saved' : 'Save this park'}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              {saved ? (
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              ) : (
+                <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" />
+              )}
+            </svg>
+            {saveLoading ? (saved ? 'Removing…' : 'Saving…') : saved ? 'Saved' : 'Save'}
+          </button>
+        </div>
+        {saveMessage && (
+          <p className={`save-message${saveMessage.startsWith('Could not') ? ' save-message--error' : ''}`}>{saveMessage}</p>
+        )}
         <div className="park-meta">
           {park.city && <span className="meta-badge"> {park.city}</span>}
           {park.state_code && <span className="meta-badge">{Array.isArray(park.state_code) ? park.state_code.join(", ") : park.state_code}</span>}
