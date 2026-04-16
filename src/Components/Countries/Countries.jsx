@@ -61,7 +61,7 @@ function Countries() {
           </div>
         )}
         <Link to="/random" className="random-park-link">
-          🎰 Feeling Lucky? Discover a Random Park!
+          Feeling Lucky? Discover a Random Park!
         </Link>
       </header>
       

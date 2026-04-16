@@ -92,8 +92,8 @@ function RandomPark() {
               <div className="preview-map">
                 <ComposableMap
                   projection="geoAlbersUsa"
-                  width={600}
-                  height={380}
+                  width={805}
+                  height={500}
                   style={{ width: '100%', height: '100%' }}
                 >
                   <Geographies geography={statesGeo}>
@@ -132,8 +132,8 @@ function RandomPark() {
               <div className="dart-map">
                 <ComposableMap
                   projection="geoAlbersUsa"
-                  width={600}
-                  height={380}
+                  width={805}
+                  height={450}
                   style={{ width: '100%', height: '100%' }}
                 >
                   <Geographies geography={statesGeo}>
