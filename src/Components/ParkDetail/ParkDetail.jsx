@@ -19,6 +19,21 @@ function ParkDetail() {
   const [saveLoading, setSaveLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    axios
+      .get(`${BACKEND_URL}/auth/me/saved-parks`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        const parks = res.data.saved_parks || [];
+        setSaved(parks.includes(parkCode));
+      })
+      .catch(() => {});
+  }, [parkCode]);
+
   const convertLatLongToMapsURL = (lat, long) => {
     const url = `https://www.google.com/maps?q=${lat}+${long}`;
     return url.replaceAll(" ", "+");
