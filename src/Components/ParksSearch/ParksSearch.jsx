@@ -63,6 +63,11 @@ function Parks() {
       setParks(allParks.filter(park =>
         park.activities?.some(a => a.toLowerCase().includes(q))
       ));
+    } else if (searchMode === 'state') {
+      setParks(allParks.filter(park => {
+        const states = Array.isArray(park.state_code) ? park.state_code : [park.state_code];
+        return states.some(s => s?.toLowerCase().includes(q));
+      }));
     }
   }, [searchQuery, searchMode, allParks]);
 
@@ -107,6 +112,7 @@ function Parks() {
             className="search-select"
           >
             <option value="name">Search by Name</option>
+            <option value="state">Search by State</option>
             <option value="type">Search by Type</option>
             <option value="activity">Search by Activity</option>
           </select>
@@ -114,6 +120,7 @@ function Parks() {
             type="text"
             placeholder={
               searchMode === 'name' ? 'Search parks by name...' :
+              searchMode === 'state' ? 'Search by state code...' :
               searchMode === 'type' ? 'Search by park type...' :
               'Search by activity...'
             }
