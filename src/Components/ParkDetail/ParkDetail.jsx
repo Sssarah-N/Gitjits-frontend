@@ -31,7 +31,7 @@ function ParkDetail() {
         const parks = res.data.saved_parks || [];
         setSaved(parks.includes(parkCode));
       })
-      .catch(() => {});
+      .catch(() => { });
   }, [parkCode]);
 
   const convertLatLongToMapsURL = (lat, long) => {
@@ -134,14 +134,14 @@ function ParkDetail() {
       {park?.images?.length > 0 && (
         <div className="park-images">
           {park.images.map((image) => (
-            <img key={image.url} src={image.url} alt={image.title} 
+            <img key={image.url} src={image.url} alt={image.title}
               onClick={() => setEnlargedImage(image.url)}
             />
           ))}
         </div>
       )}
 
-      { enlargedImage && (
+      {enlargedImage && (
         <div className="enlarged-image-container">
           <img src={enlargedImage} alt="Enlarged" />
           <button onClick={() => setEnlargedImage(null)}>Close</button>
@@ -276,7 +276,21 @@ function ParkDetail() {
         </div>
       ))}
 
+      {park.entrance_fees?.length > 0 && (
+        <div className="park-entrance-fees">
+          <h4>Entrance Fees</h4>
+          {park.entrance_fees.map((fee, i) => (
+            <div key={i} className="fee-item">
+              <div className="fee-header">
+                <span className="fee-title">{fee.title}</span>
+                <span className="fee-cost">{fee.cost === '0.00' ? 'Free' : `$${fee.cost}`}</span>
+              </div>
+              {fee.description && <p className="fee-description">{fee.description}</p>}
+            </div>
+          ))}
+        </div>
 
+      )}
     </div>
   );
 }

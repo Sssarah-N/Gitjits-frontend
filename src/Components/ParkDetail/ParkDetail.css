@@ -306,3 +306,39 @@
   border-radius: 4px;
   font-size: 0.875rem;
 }
+
+.park-entrance-fees {
+  margin: 20px 0;
+}
+
+.fee-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+}
+
+.fee-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.fee-title {
+  font-weight: 600;
+  color: #1b5e20;
+}
+
+.fee-cost {
+  font-weight: 700;
+  color: #2e7d32;
+  font-size: 1.05rem;
+}
+
+.fee-description {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
