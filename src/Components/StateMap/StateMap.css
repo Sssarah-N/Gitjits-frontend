@@ -5,12 +5,12 @@
 
 .park-marker {
     fill: #4FA153;
-    r: 5px;
+    stroke: #346A38;
     cursor: pointer;
-    transition: r 0.2s ease;
+    transition: transform 0.2s ease;
 
     &:hover {
-        r: 8px;
+        transform: scale(2);
     }
 }
 

@@ -27,6 +27,8 @@ export default function StateMap({ stateCode, parkCoords, countryCode }) {
     return geoMercator().fitSize([W, H], outline);
   }, [code]);
 
+  const [zoomLevel, setZoomLevel] = useState(1);
+
   return (
     <div className="state-map-container" style={{ position: 'relative' }}>
       {tooltip && (
@@ -42,7 +44,11 @@ export default function StateMap({ stateCode, parkCoords, countryCode }) {
       )}
 
       <ComposableMap projection={projection} width={W} height={H}>
-        <ZoomableGroup center={[0, 0]} zoom={1} minZoom={0.5} maxZoom={8}>
+        <ZoomableGroup center={[0, 0]} zoom={1} minZoom={0.5} maxZoom={12}
+          onMove={(e) => {
+            setZoomLevel(e.zoom);
+          }}
+        >
           <Geographies
             geography={statesGeo}
             parseGeographies={(geos) => geos.filter((g) => g.properties.code === code)}
@@ -69,7 +75,10 @@ export default function StateMap({ stateCode, parkCoords, countryCode }) {
               onMouseLeave={() => setTooltip('')}
               style={{ cursor: 'pointer' }}
             >
-              <circle r={5} className="park-marker" />
+              <circle className="park-marker" 
+                r={5 / zoomLevel}
+                strokeWidth={1.5 / zoomLevel}
+              />
             </Marker>
           ))}
         </ZoomableGroup>
