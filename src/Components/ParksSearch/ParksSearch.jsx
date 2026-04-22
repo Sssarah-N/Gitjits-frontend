@@ -138,6 +138,37 @@ function Parks() {
           )}
         </form>
 
+        {!isSearching && searchMode !== 'name' && (
+          <div className="search-hints">
+            <span className="hints-label">Try:</span>
+            {searchMode === 'type' && (
+              <>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('National Park')}>National Park</button>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('National Monument')}>National Monument</button>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('National Historic Site')}>National Historic Site</button>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('National Seashore')}>National Seashore</button>
+              </>
+            )}
+            {searchMode === 'state' && (
+              <>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('CA')}>CA</button>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('TX')}>TX</button>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('NY')}>NY</button>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('FL')}>FL</button>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('AZ')}>AZ</button>
+              </>
+            )}
+            {searchMode === 'activity' && (
+              <>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('Hiking')}>Hiking</button>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('Camping')}>Camping</button>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('Fishing')}>Fishing</button>
+                <button type="button" className="hint-chip" onClick={() => setSearchQuery('Wildlife Watching')}>Wildlife Watching</button>
+              </>
+            )}
+          </div>
+        )}
+
         {isSearching && (
           <p className="search-results">
             Found {parks.length} park{parks.length !== 1 ? 's' : ''} matching &quot;{searchQuery}&quot;

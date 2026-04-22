@@ -89,6 +89,37 @@
   margin-top: 10px;
 }
 
+.search-hints {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.hints-label {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.hint-chip {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hint-chip:hover {
+  background: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+}
+
 .parks-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
