@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '../../constants';
+import { useAuth } from '../../context/AuthContext';
 import './Login.css';
 
 const LOGIN_ENDPOINT = `${BACKEND_URL}/auth/login`;
 
 function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -20,18 +22,10 @@ function Login() {
 
     axios.post(LOGIN_ENDPOINT, { username, password })
       .then((response) => {
-        console.log('Login response:', response.data);
+        const { token, user } = response.data;
         
-        // Save user data and token to localStorage
-        if (response.data.token) {
-          localStorage.setItem('token', response.data.token);
-        }
-        if (response.data.user) {
-          localStorage.setItem('user', JSON.stringify(response.data.user));
-        } else {
-          // If no user object in response, store username
-          localStorage.setItem('user', JSON.stringify({ username }));
-        }
+        // Use auth context to store login state
+        login(user || { username }, token);
         
         setMessage('Login successful! Redirecting...');
         setLoading(false);

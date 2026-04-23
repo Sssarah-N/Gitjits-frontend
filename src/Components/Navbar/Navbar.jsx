@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import propTypes from 'prop-types';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const PAGES = [
   { label: 'Countries', destination: '/countries' },
@@ -23,29 +24,39 @@ NavLink.propTypes = {
 };
 
 function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const location = useLocation();
+  const { isLoggedIn, isAdmin, logout } = useAuth();
 
-  useEffect(() => {
-    // Check if user is logged in
-    const user = localStorage.getItem('user');
-    setIsLoggedIn(!!user);
-  }, [location]);
+  const handleLogout = () => {
+    logout();
+    window.location.href = '/';
+  };
 
   return (
     <nav>
       <div className="wrapper nav-container">
         <ul className="nav-left">
           {PAGES.map((page) => <NavLink key={page.destination} page={page} />)}
+          {isAdmin && (
+            <li>
+              <Link to="/admin" className="admin-link">Admin</Link>
+            </li>
+          )}
         </ul>
         <ul className="nav-right">
-          <li>
-            {isLoggedIn ? (
-              <Link to="/profile">Profile</Link>
-            ) : (
+          {isLoggedIn ? (
+            <>
+              <li>
+                <Link to="/profile">Profile</Link>
+              </li>
+              <li>
+                <button onClick={handleLogout} className="logout-btn">Logout</button>
+              </li>
+            </>
+          ) : (
+            <li>
               <Link to="/login">Login</Link>
-            )}
-          </li>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

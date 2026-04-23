@@ -157,6 +157,27 @@ nav a:focus {
   outline: none;
 }
 
+nav .admin-link {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+}
+
+nav .logout-btn {
+  background: transparent;
+  border: 2px solid var(--background-color);
+  color: var(--background-color);
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+nav .logout-btn:hover {
+  background: var(--background-color);
+  color: var(--accent-color);
+}
+
 .game-container {
   border: 2px solid var(--accent-color);
   margin: 1rem 0;
