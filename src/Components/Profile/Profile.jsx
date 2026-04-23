@@ -59,7 +59,8 @@ function Profile() {
 
   const getParkUrl = (park) => {
     const stateCode = Array.isArray(park.state_code) ? park.state_code[0] : park.state_code;
-    return `/countries/${park.country_code}/states/${stateCode}/parks/${park.park_code}`;
+    const countryCode = park.country_code || 'USA';
+    return `/countries/${countryCode}/states/${stateCode}/parks/${park.park_code}`;
   };
 
   const handleLogout = () => {
