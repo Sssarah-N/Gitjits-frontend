@@ -306,3 +306,79 @@
   border-radius: 4px;
   font-size: 0.875rem;
 }
+
+.park-entrance-fees {
+  margin: 20px 0;
+}
+
+.park-body-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.park-body-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.park-body-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.park-body-item-title {
+  font-weight: 600;
+  color: #1b5e20;
+  margin: 0;
+}
+
+.park-body-item-cost {
+  font-weight: 700;
+  color: #2e7d32;
+  font-size: 1.05rem;
+}
+
+.park-body-item-description {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.park-hours-body-container {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+
+  .park-body-item-description {
+    flex: 2;
+  }
+
+  .park-hours-table {
+    flex: 1;
+    margin: 0;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    color: #666;
+    align-self: flex-start;
+    min-width: 0;
+    width: 100%;
+
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.35rem 0;
+      padding-right: 0.5rem;
+    }
+
+    tr:not(:last-child) {
+      border-bottom: 1px solid #e0e0e0;
+    }
+  }
+}

@@ -19,6 +19,8 @@ function ParkDetail() {
   const [saveLoading, setSaveLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
 
+  const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -31,7 +33,7 @@ function ParkDetail() {
         const parks = res.data.saved_parks || [];
         setSaved(parks.includes(parkCode));
       })
-      .catch(() => {});
+      .catch(() => { });
   }, [parkCode]);
 
   const convertLatLongToMapsURL = (lat, long) => {
@@ -134,14 +136,14 @@ function ParkDetail() {
       {park?.images?.length > 0 && (
         <div className="park-images">
           {park.images.map((image) => (
-            <img key={image.url} src={image.url} alt={image.title} 
+            <img key={image.url} src={image.url} alt={image.title}
               onClick={() => setEnlargedImage(image.url)}
             />
           ))}
         </div>
       )}
 
-      { enlargedImage && (
+      {enlargedImage && (
         <div className="enlarged-image-container">
           <img src={enlargedImage} alt="Enlarged" />
           <button onClick={() => setEnlargedImage(null)}>Close</button>
@@ -260,23 +262,48 @@ function ParkDetail() {
 
       </div>
 
-      {park.operating_hours && Object.entries(park.operating_hours).map(([unitName, unit]) => (
-        <div key={unitName} className="park-hours">
-          <h4>Hours</h4>
-          <p>{unit.description}</p>
-          {unit.standardHours && (
-            <ul>
-              {Object.entries(unit.standardHours).map(([day, hours]) => (
-                <li key={day}>
-                  <strong>{day.charAt(0).toUpperCase() + day.slice(1)}:</strong> {hours}
-                </li>
-              ))}
-            </ul>
-          )}
+      {park.entrance_fees?.length > 0 && (
+        <div className="park-entrance-fees">
+          <h4>Entrance Fees</h4>
+          {park.entrance_fees.map((fee, i) => (
+            <div key={i} className="park-body-item">
+              <div className="park-body-item-header">
+                <span className="park-body-item-title">{fee.title}</span>
+                <span className="park-body-item-cost">{fee.cost === '0.00' ? 'Free' : `$${fee.cost}`}</span>
+              </div>
+              {fee.description && <p className="park-body-item-description">{fee.description}</p>}
+            </div>
+          ))}
         </div>
-      ))}
+      )}
 
-
+      <h4>Hours</h4>
+      {park.operating_hours && (
+        <div className="park-body-items-container">
+          { Object.entries(park.operating_hours).map(([unitName, unit]) => (
+            <div key={unitName} className="park-body-item">
+              <h4 className="park-body-item-title">Hours for {unitName}</h4>
+              <div className="park-hours-body-container">
+                <p className="park-body-item-description">{unit.description}</p>
+                {unit.standardHours && (
+                  <table className="park-hours-table">
+                    <tbody>
+                      { DAYS.map((day) => (
+                        unit.standardHours[day] && (
+                          <tr key={day}>
+                            <th scope="row">{day.charAt(0).toUpperCase() + day.slice(1)}</th>
+                            <td>{unit.standardHours[day]}</td>
+                          </tr>
+                        )
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+          )) }
+        </div>
+      )}
     </div>
   );
 }
