@@ -17,6 +17,18 @@ function AdminDashboard() {
   
   const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({});
+  const [expandedSections, setExpandedSections] = useState({
+    basic: true,
+    contacts: false,
+    addresses: false,
+    hours: false,
+    activities: false,
+    images: false
+  });
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
   useEffect(() => {
     if (!authLoading && (!isLoggedIn || !isAdmin)) {
@@ -70,7 +82,80 @@ function AdminDashboard() {
 
   const handleEdit = (item, type) => {
     setEditingItem({ ...item, type });
-    setFormData(item);
+    // Deep clone to avoid mutating original data
+    setFormData(JSON.parse(JSON.stringify(item)));
+    // Expand basic section by default when editing
+    setExpandedSections({
+      basic: true,
+      contacts: false,
+      addresses: false,
+      hours: false,
+      activities: false,
+      images: false
+    });
+  };
+
+  // Helper functions for nested array fields
+  const updateNestedArray = (field, index, key, value) => {
+    const arr = [...(formData[field] || [])];
+    arr[index] = { ...arr[index], [key]: value };
+    setFormData({ ...formData, [field]: arr });
+  };
+
+  const addToArray = (field, template) => {
+    const arr = [...(formData[field] || [])];
+    arr.push(template);
+    setFormData({ ...formData, [field]: arr });
+  };
+
+  const removeFromArray = (field, index) => {
+    const arr = [...(formData[field] || [])];
+    arr.splice(index, 1);
+    setFormData({ ...formData, [field]: arr });
+  };
+
+  // For contacts which has nested phone_numbers and email_addresses
+  const updateContact = (contactType, index, key, value) => {
+    const contacts = { ...(formData.contacts || {}) };
+    const arr = [...(contacts[contactType] || [])];
+    arr[index] = { ...arr[index], [key]: value };
+    contacts[contactType] = arr;
+    setFormData({ ...formData, contacts });
+  };
+
+  const addContact = (contactType, template) => {
+    const contacts = { ...(formData.contacts || {}) };
+    const arr = [...(contacts[contactType] || [])];
+    arr.push(template);
+    contacts[contactType] = arr;
+    setFormData({ ...formData, contacts });
+  };
+
+  const removeContact = (contactType, index) => {
+    const contacts = { ...(formData.contacts || {}) };
+    const arr = [...(contacts[contactType] || [])];
+    arr.splice(index, 1);
+    contacts[contactType] = arr;
+    setFormData({ ...formData, contacts });
+  };
+
+  // For activities (simple string array)
+  const updateActivity = (index, value) => {
+    const arr = [...(formData.activities || [])];
+    arr[index] = value;
+    setFormData({ ...formData, activities: arr });
+  };
+
+  const addActivity = () => {
+    const arr = [...(formData.activities || [])];
+    arr.push('');
+    setFormData({ ...formData, activities: arr });
+  };
+
+  const removeActivity = (index) => {
+    const arr = [...(formData.activities || [])];
+    arr.splice(index, 1);
+    setFormData({ ...formData, activities: arr });
   };
 
   const handleSave = async () => {
@@ -142,34 +227,371 @@ function AdminDashboard() {
 
       {editingItem && (
         <div className="edit-modal">
-          <div className="edit-modal-content">
-            <h2>Edit {editingItem.type}</h2>
+          <div className={`edit-modal-content ${editingItem.type === 'park' ? 'park-edit' : ''}`}>
+            <h2>Edit {editingItem.type === 'park' ? 'Park' : editingItem.type}</h2>
             <div className="edit-form">
               {editingItem.type === 'park' && (
                 <>
-                  <label>
-                    Name:
-                    <input
-                      value={formData.name || ''}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    />
-                  </label>
-                  <label>
-                    Park Code:
-                    <input
-                      value={formData.park_code || ''}
-                      onChange={(e) => setFormData({ ...formData, park_code: e.target.value })}
-                    />
-                  </label>
-                  <label>
-                    Description:
-                    <textarea
-                      value={formData.description || ''}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    />
-                  </label>
+                  {/* Basic Info Section */}
+                  <div className="form-section">
+                    <div className="section-header" onClick={() => toggleSection('basic')}>
+                      <h3>Basic Information</h3>
+                      <span className={`toggle-icon ${expandedSections.basic ? 'expanded' : ''}`}>▼</span>
+                    </div>
+                    {expandedSections.basic && (
+                      <div className="section-content">
+                        <div className="form-row">
+                          <label>
+                            Name:
+                            <input
+                              value={formData.name || ''}
+                              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            />
+                          </label>
+                          <label>
+                            Full Name:
+                            <input
+                              value={formData.full_name || ''}
+                              onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                            />
+                          </label>
+                        </div>
+                        <div className="form-row">
+                          <label>
+                            Park Code:
+                            <input
+                              value={formData.park_code || ''}
+                              onChange={(e) => setFormData({ ...formData, park_code: e.target.value })}
+                              disabled
+                            />
+                          </label>
+                          <label>
+                            Designation:
+                            <input
+                              value={formData.designation || ''}
+                              onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
+                              placeholder="e.g., National Park, National Monument"
+                            />
+                          </label>
+                        </div>
+                        <div className="form-row">
+                          <label>
+                            Website URL:
+                            <input
+                              type="url"
+                              value={formData.url || ''}
+                              onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                              placeholder="https://www.nps.gov/..."
+                            />
+                          </label>
+                        </div>
+                        <div className="form-row">
+                          <label>
+                            Latitude:
+                            <input
+                              type="number"
+                              step="any"
+                              value={formData.latitude || ''}
+                              onChange={(e) => setFormData({ ...formData, latitude: parseFloat(e.target.value) || '' })}
+                            />
+                          </label>
+                          <label>
+                            Longitude:
+                            <input
+                              type="number"
+                              step="any"
+                              value={formData.longitude || ''}
+                              onChange={(e) => setFormData({ ...formData, longitude: parseFloat(e.target.value) || '' })}
+                            />
+                          </label>
+                        </div>
+                        <label>
+                          Description:
+                          <textarea
+                            value={formData.description || ''}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            rows={4}
+                          />
+                        </label>
+                        <label>
+                          Directions Info:
+                          <textarea
+                            value={formData.directions_info || ''}
+                            onChange={(e) => setFormData({ ...formData, directions_info: e.target.value })}
+                            rows={3}
+                          />
+                        </label>
+                        <label>
+                          Directions URL:
+                          <input
+                            type="url"
+                            value={formData.directions_url || ''}
+                            onChange={(e) => setFormData({ ...formData, directions_url: e.target.value })}
+                          />
+                        </label>
+                        <label>
+                          Weather Info:
+                          <textarea
+                            value={formData.weather_info || ''}
+                            onChange={(e) => setFormData({ ...formData, weather_info: e.target.value })}
+                            rows={3}
+                          />
+                        </label>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Contacts Section */}
+                  <div className="form-section">
+                    <div className="section-header" onClick={() => toggleSection('contacts')}>
+                      <h3>Contact Information</h3>
+                      <span className={`toggle-icon ${expandedSections.contacts ? 'expanded' : ''}`}>▼</span>
+                    </div>
+                    {expandedSections.contacts && (
+                      <div className="section-content">
+                        <div className="subsection">
+                          <h4>Phone Numbers</h4>
+                          {(formData.contacts?.phone_numbers || []).map((phone, idx) => (
+                            <div key={idx} className="array-item">
+                              <input
+                                value={phone.phone_number || ''}
+                                onChange={(e) => updateContact('phone_numbers', idx, 'phone_number', e.target.value)}
+                                placeholder="Phone number"
+                              />
+                              <input
+                                value={phone.type || ''}
+                                onChange={(e) => updateContact('phone_numbers', idx, 'type', e.target.value)}
+                                placeholder="Type (Voice, TTY, Fax)"
+                              />
+                              <button type="button" className="remove-btn" onClick={() => removeContact('phone_numbers', idx)}>×</button>
+                            </div>
+                          ))}
+                          <button type="button" className="add-btn" onClick={() => addContact('phone_numbers', { phone_number: '', type: 'Voice' })}>
+                            + Add Phone
+                          </button>
+                        </div>
+                        <div className="subsection">
+                          <h4>Email Addresses</h4>
+                          {(formData.contacts?.email_addresses || []).map((email, idx) => (
+                            <div key={idx} className="array-item">
+                              <input
+                                type="email"
+                                value={email.email_address || ''}
+                                onChange={(e) => updateContact('email_addresses', idx, 'email_address', e.target.value)}
+                                placeholder="Email address"
+                              />
+                              <button type="button" className="remove-btn" onClick={() => removeContact('email_addresses', idx)}>×</button>
+                            </div>
+                          ))}
+                          <button type="button" className="add-btn" onClick={() => addContact('email_addresses', { email_address: '' })}>
+                            + Add Email
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Addresses Section */}
+                  <div className="form-section">
+                    <div className="section-header" onClick={() => toggleSection('addresses')}>
+                      <h3>Addresses</h3>
+                      <span className={`toggle-icon ${expandedSections.addresses ? 'expanded' : ''}`}>▼</span>
+                    </div>
+                    {expandedSections.addresses && (
+                      <div className="section-content">
+                        {(formData.addresses || []).map((addr, idx) => (
+                          <div key={idx} className="address-item">
+                            <div className="address-header">
+                              <span className="address-type">{addr.type || 'Address'} #{idx + 1}</span>
+                              <button type="button" className="remove-btn" onClick={() => removeFromArray('addresses', idx)}>×</button>
+                            </div>
+                            <div className="form-row">
+                              <label>
+                                Type:
+                                <select
+                                  value={addr.type || 'Physical'}
+                                  onChange={(e) => updateNestedArray('addresses', idx, 'type', e.target.value)}
+                                >
+                                  <option value="Physical">Physical</option>
+                                  <option value="Mailing">Mailing</option>
+                                </select>
+                              </label>
+                            </div>
+                            <label>
+                              Address Line 1:
+                              <input
+                                value={addr.line1 || ''}
+                                onChange={(e) => updateNestedArray('addresses', idx, 'line1', e.target.value)}
+                              />
+                            </label>
+                            <label>
+                              Address Line 2:
+                              <input
+                                value={addr.line2 || ''}
+                                onChange={(e) => updateNestedArray('addresses', idx, 'line2', e.target.value)}
+                              />
+                            </label>
+                            <div className="form-row">
+                              <label>
+                                City:
+                                <input
+                                  value={addr.city || ''}
+                                  onChange={(e) => updateNestedArray('addresses', idx, 'city', e.target.value)}
+                                />
+                              </label>
+                              <label>
+                                State:
+                                <input
+                                  value={addr.state_code || ''}
+                                  onChange={(e) => updateNestedArray('addresses', idx, 'state_code', e.target.value)}
+                                  maxLength={2}
+                                />
+                              </label>
+                              <label>
+                                ZIP:
+                                <input
+                                  value={addr.postal_code || ''}
+                                  onChange={(e) => updateNestedArray('addresses', idx, 'postal_code', e.target.value)}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        ))}
+                        <button type="button" className="add-btn" onClick={() => addToArray('addresses', { type: 'Physical', line1: '', city: '', state_code: '', postal_code: '' })}>
+                          + Add Address
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Operating Hours Section */}
+                  <div className="form-section">
+                    <div className="section-header" onClick={() => toggleSection('hours')}>
+                      <h3>Operating Hours</h3>
+                      <span className={`toggle-icon ${expandedSections.hours ? 'expanded' : ''}`}>▼</span>
+                    </div>
+                    {expandedSections.hours && (
+                      <div className="section-content">
+                        <p className="hint">Operating hours data is complex. Edit as JSON or plain text description.</p>
+                        <label>
+                          Operating Hours (JSON):
+                          <textarea
+                            value={typeof formData.operating_hours === 'string' 
+                              ? formData.operating_hours 
+                              : JSON.stringify(formData.operating_hours || [], null, 2)}
+                            onChange={(e) => {
+                              try {
+                                const parsed = JSON.parse(e.target.value);
+                                setFormData({ ...formData, operating_hours: parsed });
+                              } catch {
+                                setFormData({ ...formData, operating_hours: e.target.value });
+                              }
+                            }}
+                            rows={8}
+                            className="json-input"
+                          />
+                        </label>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Activities Section */}
+                  <div className="form-section">
+                    <div className="section-header" onClick={() => toggleSection('activities')}>
+                      <h3>Activities ({(formData.activities || []).length})</h3>
+                      <span className={`toggle-icon ${expandedSections.activities ? 'expanded' : ''}`}>▼</span>
+                    </div>
+                    {expandedSections.activities && (
+                      <div className="section-content">
+                        <div className="activities-list">
+                          {(formData.activities || []).map((activity, idx) => (
+                            <div key={idx} className="activity-item">
+                              <input
+                                value={activity || ''}
+                                onChange={(e) => updateActivity(idx, e.target.value)}
+                                placeholder="Activity name"
+                              />
+                              <button type="button" className="remove-btn" onClick={() => removeActivity(idx)}>×</button>
+                            </div>
+                          ))}
+                        </div>
+                        <button type="button" className="add-btn" onClick={addActivity}>
+                          + Add Activity
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Images Section */}
+                  <div className="form-section">
+                    <div className="section-header" onClick={() => toggleSection('images')}>
+                      <h3>Images ({(formData.images || []).length})</h3>
+                      <span className={`toggle-icon ${expandedSections.images ? 'expanded' : ''}`}>▼</span>
+                    </div>
+                    {expandedSections.images && (
+                      <div className="section-content">
+                        {(formData.images || []).map((img, idx) => (
+                          <div key={idx} className="image-item">
+                            <div className="image-header">
+                              <span>Image #{idx + 1}</span>
+                              <button type="button" className="remove-btn" onClick={() => removeFromArray('images', idx)}>×</button>
+                            </div>
+                            {img.url && (
+                              <div className="image-preview">
+                                <img src={img.url} alt={img.title || 'Preview'} />
+                              </div>
+                            )}
+                            <label>
+                              Image URL:
+                              <input
+                                type="url"
+                                value={img.url || ''}
+                                onChange={(e) => updateNestedArray('images', idx, 'url', e.target.value)}
+                                placeholder="https://..."
+                              />
+                            </label>
+                            <label>
+                              Title:
+                              <input
+                                value={img.title || ''}
+                                onChange={(e) => updateNestedArray('images', idx, 'title', e.target.value)}
+                              />
+                            </label>
+                            <label>
+                              Caption:
+                              <textarea
+                                value={img.caption || ''}
+                                onChange={(e) => updateNestedArray('images', idx, 'caption', e.target.value)}
+                                rows={2}
+                              />
+                            </label>
+                            <div className="form-row">
+                              <label>
+                                Credit:
+                                <input
+                                  value={img.credit || ''}
+                                  onChange={(e) => updateNestedArray('images', idx, 'credit', e.target.value)}
+                                />
+                              </label>
+                              <label>
+                                Alt Text:
+                                <input
+                                  value={img.altText || ''}
+                                  onChange={(e) => updateNestedArray('images', idx, 'altText', e.target.value)}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        ))}
+                        <button type="button" className="add-btn" onClick={() => addToArray('images', { url: '', title: '', caption: '', credit: '', altText: '' })}>
+                          + Add Image
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </>
               )}
+
               {editingItem.type === 'state' && (
                 <>
                   <label>
@@ -196,6 +618,7 @@ function AdminDashboard() {
                   </label>
                 </>
               )}
+              
               {editingItem.type === 'city' && (
                 <>
                   <label>
@@ -246,7 +669,7 @@ function AdminDashboard() {
                       <td>{park.park_code}</td>
                       <td>{Array.isArray(park.state_code) ? park.state_code.join(', ') : park.state_code}</td>
                       <td className="actions">
-                        <button className="edit-btn" onClick={() => handleEdit(park, 'park')}>Edit</button>
+                        <button className="edit-btn" onClick={() => navigate(`/admin/parks/${park.park_code}`)}>Edit</button>
                         <button className="delete-btn" onClick={() => handleDelete('park', park.park_code)}>Delete</button>
                       </td>
                     </tr>

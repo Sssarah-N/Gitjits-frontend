@@ -19,6 +19,7 @@ import ParkDetail from './Components/ParkDetail';
 import ParksSearch from './Components/ParksSearch';
 import RandomPark from './Components/RandomPark';
 import AdminDashboard from './Components/AdminDashboard';
+import ParkEditor from './Components/AdminDashboard/ParkEditor';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="profile" element={<Profile />} />
           <Route path="admin" element={<AdminDashboard />} />
+          <Route path="admin/parks/:parkCode" element={<ParkEditor />} />
           <Route index element={<Countries />} />
           <Route path="countries" element={<Countries />} />
           <Route path="countries/:code" element={<CountryDetail />} />
