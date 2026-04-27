@@ -12,6 +12,8 @@ function Parks() {
   const [error, setError] = useState('');
   const [allParks, setAllParks] = useState([]);
   const [parks, setParks] = useState([]);
+  const [activities, setActivities] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get('q') || '';
@@ -40,6 +42,17 @@ function Parks() {
       });
   }, []);
 
+  //load all activities
+  useEffect(() => {
+  axios.get(`${PARKS_ENDPOINT}/activities`)
+    .then((res) => {
+      setActivities(res.data.activities || []);
+    })
+    .catch(() => {
+      console.error('Failed to load activities');
+    });
+}, []);
+
   // Filter as user types and reset page
   useEffect(() => {
     setCurrentPage(1);
@@ -61,7 +74,7 @@ function Parks() {
       ));
     } else if (searchMode === 'activity') {
       setParks(allParks.filter(park =>
-        park.activities?.some(a => a.toLowerCase().includes(q))
+        park.activities?.includes(searchQuery)
       ));
     } else if (searchMode === 'state') {
       setParks(allParks.filter(park => {
@@ -116,18 +129,32 @@ function Parks() {
             <option value="type">Search by Type</option>
             <option value="activity">Search by Activity</option>
           </select>
-          <input
-            type="text"
-            placeholder={
-              searchMode === 'name' ? 'Search parks by name...' :
-              searchMode === 'state' ? 'Search by state code...' :
-              searchMode === 'type' ? 'Search by park type...' :
-              'Search by activity...'
-            }
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
+          {searchMode === 'activity' ? (
+  <select
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    className="search-select"
+  >
+    <option value="">Select an activity...</option>
+    {activities.map((activity) => (
+      <option key={activity} value={activity}>
+        {activity}
+      </option>
+    ))}
+  </select>
+) : (
+  <input
+    type="text"
+    placeholder={
+      searchMode === 'name' ? 'Search parks by name...' :
+      searchMode === 'state' ? 'Search by state code...' :
+      'Search by park type...'
+    }
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    className="search-input"
+  />
+)}
           <button type="submit" className="search-btn" onClick={(e) => e.preventDefault()}>
             Search
           </button>
@@ -138,7 +165,7 @@ function Parks() {
           )}
         </form>
 
-        {!isSearching && searchMode !== 'name' && (
+        {!isSearching && searchMode !== 'name' && searchMode !== 'activity' && (
           <div className="search-hints">
             <span className="hints-label">Try:</span>
             {searchMode === 'type' && (
