@@ -155,7 +155,7 @@
 }
 
 /* Main Content Layout */
-.park-content {
+.edit-park-content {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 30px;
@@ -163,7 +163,7 @@
 }
 
 @media (max-width: 900px) {
-  .park-content {
+  .edit-park-content {
     grid-template-columns: 1fr;
   }
 }

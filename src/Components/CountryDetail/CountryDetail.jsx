@@ -91,6 +91,14 @@ function CountryDetail() {
         )}
       </div>
 
+      <div className="welcome-section">
+  <p>
+    Welcome! Explore national parks across the United States — spanning all 50 states
+    and additional territories. Discover natural wonders, historic sites, and
+    outdoor experiences from coast to coast.
+  </p>
+</div>
+
       <USMap
         onStateClick={handleMapStateClick}
         parkCounts={parkCounts}

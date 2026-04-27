@@ -374,7 +374,7 @@ function ParkEditor() {
         </div>
       </div>
 
-      <div className="park-content">
+      <div className="edit-park-content">
         <div className="main-info">
           <div className="section">
             <h3>Description</h3>
