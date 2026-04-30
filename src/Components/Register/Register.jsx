@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { BACKEND_URL } from '../../constants';
+import EmailInput from '../EmailInput/EmailInput';
 import './Register.css';
 
 const REGISTER_FORM_ENDPOINT = `${BACKEND_URL}/auth/register-form`;
@@ -119,14 +120,18 @@ function Register() {
                   ))}
                 </select>
               ) : (
+                field.fld_nm === 'email' ? (
+                  <EmailInput field={field} formData={formData} handleChange={handleChange} />
+                ) : (
                 <input
                   type={field.input_type || 'text'}
                   id={field.fld_nm}
                   value={formData[field.fld_nm] || ''}
                   onChange={(e) => handleChange(field.fld_nm, e.target.value)}
-                  required={!field.optional}
-                  className="form-input"
-                />
+                    required={!field.optional}
+                    className="form-input"
+                  />
+                )
               )}
             </div>
           ))}
