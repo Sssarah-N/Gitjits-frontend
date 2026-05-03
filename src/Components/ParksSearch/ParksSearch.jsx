@@ -13,6 +13,7 @@ function Parks() {
   const [allParks, setAllParks] = useState([]);
   const [parks, setParks] = useState([]);
   const [activities, setActivities] = useState([]);
+  const [topics, setTopics] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -44,14 +45,25 @@ function Parks() {
 
   //load all activities
   useEffect(() => {
-  axios.get(`${PARKS_ENDPOINT}/activities`)
-    .then((res) => {
-      setActivities(res.data.activities || []);
-    })
-    .catch(() => {
-      console.error('Failed to load activities');
-    });
-}, []);
+    axios.get(`${PARKS_ENDPOINT}/activities`)
+      .then((res) => {
+        setActivities(res.data.activities || []);
+      })
+      .catch(() => {
+        console.error('Failed to load activities');
+      });
+  }, []);
+
+  //load all topics
+  useEffect(() => {
+    axios.get(`${PARKS_ENDPOINT}/topics`)
+      .then((res) => {
+        setTopics(res.data.topics || []);
+      })
+      .catch(() => {
+        console.error('Failed to load topics');
+      });
+  }, []);
 
   // Filter as user types and reset page
   useEffect(() => {
@@ -75,6 +87,10 @@ function Parks() {
     } else if (searchMode === 'activity') {
       setParks(allParks.filter(park =>
         park.activities?.includes(searchQuery)
+      ));
+    } else if (searchMode === 'topic') {
+      setParks(allParks.filter(park =>
+        park.topics?.includes(searchQuery)
       ));
     } else if (searchMode === 'state') {
       setParks(allParks.filter(park => {
@@ -128,33 +144,47 @@ function Parks() {
             <option value="state">Search by State</option>
             <option value="type">Search by Type</option>
             <option value="activity">Search by Activity</option>
+            <option value="topic">Search by Topic</option>
           </select>
           {searchMode === 'activity' ? (
-  <select
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-    className="search-select"
-  >
-    <option value="">Select an activity...</option>
-    {activities.map((activity) => (
-      <option key={activity} value={activity}>
-        {activity}
-      </option>
-    ))}
-  </select>
-) : (
-  <input
-    type="text"
-    placeholder={
-      searchMode === 'name' ? 'Search parks by name...' :
-      searchMode === 'state' ? 'Search by state code...' :
-      'Search by park type...'
-    }
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-    className="search-input"
-  />
-)}
+            <select
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-select"
+            >
+              <option value="">Select an activity...</option>
+              {activities.map((activity) => (
+                <option key={activity} value={activity}>
+                  {activity}
+                </option>
+              ))}
+            </select>
+          ) : searchMode === 'topic' ? (
+            <select
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-select"
+            >
+              <option value="">Select a topic...</option>
+              {topics.map((topic) => (
+                <option key={topic} value={topic}>
+                  {topic}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              type="text"
+              placeholder={
+                searchMode === 'name' ? 'Search parks by name...' :
+                  searchMode === 'state' ? 'Search by state code...' :
+                    'Search by park type...'
+              }
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+          )}
           <button type="submit" className="search-btn" onClick={(e) => e.preventDefault()}>
             Search
           </button>
@@ -165,7 +195,7 @@ function Parks() {
           )}
         </form>
 
-        {!isSearching && searchMode !== 'name' && searchMode !== 'activity' && (
+        {!isSearching && searchMode !== 'name' && searchMode !== 'activity' && searchMode !== 'topic' &&(
           <div className="search-hints">
             <span className="hints-label">Try:</span>
             {searchMode === 'type' && (
@@ -183,14 +213,6 @@ function Parks() {
                 <button type="button" className="hint-chip" onClick={() => setSearchQuery('NY')}>NY</button>
                 <button type="button" className="hint-chip" onClick={() => setSearchQuery('FL')}>FL</button>
                 <button type="button" className="hint-chip" onClick={() => setSearchQuery('AZ')}>AZ</button>
-              </>
-            )}
-            {searchMode === 'activity' && (
-              <>
-                <button type="button" className="hint-chip" onClick={() => setSearchQuery('Hiking')}>Hiking</button>
-                <button type="button" className="hint-chip" onClick={() => setSearchQuery('Camping')}>Camping</button>
-                <button type="button" className="hint-chip" onClick={() => setSearchQuery('Fishing')}>Fishing</button>
-                <button type="button" className="hint-chip" onClick={() => setSearchQuery('Wildlife Watching')}>Wildlife Watching</button>
               </>
             )}
           </div>
