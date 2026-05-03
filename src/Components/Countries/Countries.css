@@ -34,10 +34,9 @@
 }
 
 .countries-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  display: flex;
   margin-bottom: 20px;
+  justify-content: center;
 }
 
 .country-card-link {
@@ -53,6 +52,7 @@
   transition: all 0.3s ease;
   cursor: pointer;
   height: 100%;
+  min-width: 350px;
 }
 
 .country-card:hover {

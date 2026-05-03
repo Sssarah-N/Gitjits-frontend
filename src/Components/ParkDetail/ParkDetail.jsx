@@ -188,6 +188,17 @@ function ParkDetail() {
         </div>
       </div>
 
+      {park.topics && park.topics.length > 0 && (
+        <div className="park-activities">
+          <h4>Topics</h4>
+          <div className="activity-badges">
+            {park.topics.map((topic, index) => (
+              <span key={index} className="meta-badge">{topic}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {park.activities && park.activities.length > 0 && (
         <div className="park-activities">
           <h4>Activities</h4>
