@@ -61,15 +61,26 @@ function Register() {
     );
   }
 
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const handleChange = (fieldName, value) => {
     setFormData(prev => ({ ...prev, [fieldName]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmitting(true);
     setError('');
     setMessage('');
+
+    const emailField = formDefinition.form.find(
+      (f) => f.fld_nm === 'email' || f.input_type === 'email'
+    );
+    if (emailField && !EMAIL_RE.test(formData[emailField.fld_nm] || '')) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    setSubmitting(true);
 
     const registerUrl = `${BACKEND_URL}${formDefinition.submit_url}`;
     
@@ -82,7 +93,11 @@ function Register() {
       })
       .catch((error) => {
         console.error('Registration error:', error);
-        const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
+        const data = error.response?.data;
+        const errorMessage =
+          data?.message || data?.error || data?.detail ||
+          (typeof data === 'string' ? data : null) ||
+          'Registration failed. Please try again.';
         setError(errorMessage);
         setSubmitting(false);
       });

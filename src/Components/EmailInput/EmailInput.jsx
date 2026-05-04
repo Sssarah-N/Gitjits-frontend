@@ -4,11 +4,13 @@ import './EmailInput.css';
 
 const EmailInput = ({ field, formData, handleChange }) => {
     const [email, setEmail] = useState(formData[field.fld_nm] || '');
-    const [emailValid, setEmailValid] = useState(false);
+    const [touched, setTouched] = useState(false);
 
-    const validateEmail = (email) => {
-        return email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) !== null;
+    const validateEmail = (value) => {
+        return value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) !== null;
     };
+
+    const isInvalid = touched && !validateEmail(email);
 
     return (
         <>
@@ -18,13 +20,13 @@ const EmailInput = ({ field, formData, handleChange }) => {
             value={email}
             onChange={(e) => {
                 setEmail(e.target.value);
-                setEmailValid(validateEmail(e.target.value));
                 handleChange(field.fld_nm, e.target.value);
             }}
+            onBlur={() => setTouched(true)}
             required={!field.optional}
             className="form-input"
         />
-        {!emailValid && <p className="email-invalid">Please enter a valid email address.</p>}
+        {isInvalid && <p className="email-invalid">Please enter a valid email address.</p>}
         </>
     );
 };
