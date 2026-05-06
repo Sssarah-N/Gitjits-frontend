@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link, useSearchParams } from 'react-router-dom';
 
@@ -7,120 +7,165 @@ import './ParksSearch.css';
 
 const PARKS_ENDPOINT = `${BACKEND_URL}/parks`;
 const PARKS_PER_PAGE = 12;
+const VALID_MODES = ['name', 'state', 'type', 'activity', 'topic'];
 
 function Parks() {
   const [error, setError] = useState('');
-  const [allParks, setAllParks] = useState([]);
   const [parks, setParks] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [activities, setActivities] = useState([]);
   const [topics, setTopics] = useState([]);
+  const [listLoading, setListLoading] = useState(true);
 
-  const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
+  const rawMode = searchParams.get('mode') || 'name';
+  const searchMode = VALID_MODES.includes(rawMode) ? rawMode : 'name';
   const searchQuery = searchParams.get('q') || '';
+  const currentPage = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+  const prevFilterKeyRef = useRef(null);
+
+  useEffect(() => {
+    if (!VALID_MODES.includes(rawMode)) {
+      const p = new URLSearchParams(searchParams);
+      p.set('mode', 'name');
+      setSearchParams(p, { replace: true });
+    }
+  }, [rawMode, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (searchMode === 'activity' || searchMode === 'topic') {
+      setDebouncedSearchQuery(searchQuery);
+      return undefined;
+    }
+    const t = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
+    return () => clearTimeout(t);
+  }, [searchQuery, searchMode]);
+
   const setSearchQuery = (value) => {
-    if (value) {
-      setSearchParams({ q: value });
-    } else {
-      setSearchParams({});
-    }
+    const p = new URLSearchParams(searchParams);
+    if (value) p.set('q', value);
+    else p.delete('q');
+    p.set('mode', searchMode);
+    p.delete('page');
+    setSearchParams(p);
   };
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchMode, setSearchMode] = useState('name');
 
-  // Load all parks once on mount
+  const setSearchMode = (mode) => {
+    const p = new URLSearchParams(searchParams);
+    p.set('mode', mode);
+    p.delete('q');
+    p.delete('page');
+    setSearchParams(p);
+  };
+
+  const setPage = (page) => {
+    const p = new URLSearchParams(searchParams);
+    if (page <= 1) p.delete('page');
+    else p.set('page', String(page));
+    setSearchParams(p);
+  };
+
   useEffect(() => {
-    axios.get(PARKS_ENDPOINT)
-      .then((res) => {
-        const data = res.data.Parks || [];
-        setAllParks(data);
-        setParks(data);
-        setLoading(false);
+    let cancelled = false;
+    Promise.all([
+      axios.get(`${PARKS_ENDPOINT}/activities`),
+      axios.get(`${PARKS_ENDPOINT}/topics`),
+    ])
+      .then(([actRes, topRes]) => {
+        if (!cancelled) {
+          setActivities(actRes.data.activities || []);
+          setTopics(topRes.data.topics || []);
+        }
       })
       .catch(() => {
-        setError('There was a problem retrieving the parks data.');
-        setLoading(false);
+        if (!cancelled) console.error('Failed to load activities or topics');
       });
+    return () => { cancelled = true; };
   }, []);
 
-  //load all activities
   useEffect(() => {
-    axios.get(`${PARKS_ENDPOINT}/activities`)
-      .then((res) => {
-        setActivities(res.data.activities || []);
-      })
-      .catch(() => {
-        console.error('Failed to load activities');
-      });
-  }, []);
+    let cancelled = false;
+    setListLoading(true);
+    setError('');
 
-  //load all topics
-  useEffect(() => {
-    axios.get(`${PARKS_ENDPOINT}/topics`)
-      .then((res) => {
-        setTopics(res.data.topics || []);
-      })
-      .catch(() => {
-        console.error('Failed to load topics');
-      });
-  }, []);
+    const params = new URLSearchParams();
+    params.set('page', String(currentPage));
+    params.set('per_page', String(PARKS_PER_PAGE));
 
-  // Filter as user types and reset page
-  useEffect(() => {
-    setCurrentPage(1);
-    const q = searchQuery.trim().toLowerCase();
-
-    if (!q) {
-      setParks(allParks);
-    } else if (searchMode === 'name') {
-      setParks(allParks.filter(park => {
-        const name = park.name?.toLowerCase() || '';
-        const fullName = park.full_name?.toLowerCase() || '';
-        return name.startsWith(q) || fullName.startsWith(q) ||
-          name.split(' ').some(word => word.startsWith(q)) ||
-          fullName.split(' ').some(word => word.startsWith(q));
-      }));
-    } else if (searchMode === 'type') {
-      setParks(allParks.filter(park =>
-        park.designation?.toLowerCase().includes(q)
-      ));
-    } else if (searchMode === 'activity') {
-      setParks(allParks.filter(park =>
-        park.activities?.includes(searchQuery)
-      ));
-    } else if (searchMode === 'topic') {
-      setParks(allParks.filter(park =>
-        park.topics?.includes(searchQuery)
-      ));
-    } else if (searchMode === 'state') {
-      setParks(allParks.filter(park => {
-        const states = Array.isArray(park.state_code) ? park.state_code : [park.state_code];
-        return states.some(s => s?.toLowerCase().includes(q));
-      }));
+    if (searchMode === 'name' && debouncedSearchQuery.trim()) {
+      params.set('name', debouncedSearchQuery.trim());
+    } else if (searchMode === 'state' && debouncedSearchQuery.trim()) {
+      params.set('state', debouncedSearchQuery.trim());
+    } else if (searchMode === 'type' && debouncedSearchQuery.trim()) {
+      params.set('designation', debouncedSearchQuery.trim());
+    } else if (searchMode === 'activity' && searchQuery) {
+      params.set('activity', searchQuery);
+    } else if (searchMode === 'topic' && searchQuery) {
+      params.set('topic', searchQuery);
     }
-  }, [searchQuery, searchMode, allParks]);
 
-  const isSearching = searchQuery.trim().length > 0;
+    axios.get(`${PARKS_ENDPOINT}/filter?${params.toString()}`)
+      .then((res) => {
+        if (!cancelled) {
+          setParks(res.data.Parks || []);
+          setTotalCount(res.data.total ?? res.data.count ?? 0);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setError('There was a problem retrieving the parks data.');
+          setParks([]);
+          setTotalCount(0);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setListLoading(false);
+      });
 
-  // Pagination calculations
-  const totalPages = Math.ceil(parks.length / PARKS_PER_PAGE);
-  const startIndex = (currentPage - 1) * PARKS_PER_PAGE;
-  const currentParks = parks.slice(startIndex, startIndex + PARKS_PER_PAGE);
+    return () => { cancelled = true; };
+  }, [searchMode, debouncedSearchQuery, searchQuery, currentPage]);
+
+  const filterKey = `${searchMode}|${
+    searchMode === 'activity' || searchMode === 'topic'
+      ? searchQuery
+      : debouncedSearchQuery
+  }`;
+
+  useEffect(() => {
+    if (prevFilterKeyRef.current === null) {
+      prevFilterKeyRef.current = filterKey;
+      return;
+    }
+    if (prevFilterKeyRef.current === filterKey) return;
+    prevFilterKeyRef.current = filterKey;
+    const p = new URLSearchParams(searchParams);
+    if (p.has('page')) {
+      p.delete('page');
+      setSearchParams(p, { replace: true });
+    }
+  }, [filterKey, searchParams, setSearchParams]);
+
+  const totalPages = Math.ceil(totalCount / PARKS_PER_PAGE) || 1;
+
+  useEffect(() => {
+    if (listLoading) return;
+    if (currentPage > totalPages) {
+      setPage(totalPages);
+    }
+  }, [listLoading, totalCount, currentPage, totalPages]);
+
+  const isSearching = searchMode === 'activity' || searchMode === 'topic'
+    ? searchQuery.length > 0
+    : searchQuery.trim().length > 0;
 
   const goToPage = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setPage(page);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  if (loading) {
-    return (
-      <div className="parks-wrapper">
-        <h1>Loading...</h1>
-      </div>
-    );
-  }
-
-  if (error) {
+  if (error && !listLoading && parks.length === 0 && totalCount === 0) {
     return (
       <div className="parks-wrapper">
         <div className="error-message">{error}</div>
@@ -137,7 +182,7 @@ function Parks() {
         <form className="search-form">
           <select
             value={searchMode}
-            onChange={(e) => { setSearchMode(e.target.value); setSearchQuery(''); }}
+            onChange={(e) => { setSearchMode(e.target.value); }}
             className="search-select"
           >
             <option value="name">Search by Name</option>
@@ -195,7 +240,7 @@ function Parks() {
           )}
         </form>
 
-        {!isSearching && searchMode !== 'name' && searchMode !== 'activity' && searchMode !== 'topic' &&(
+        {!isSearching && searchMode !== 'name' && searchMode !== 'activity' && searchMode !== 'topic' && (
           <div className="search-hints">
             <span className="hints-label">Try:</span>
             {searchMode === 'type' && (
@@ -218,18 +263,22 @@ function Parks() {
           </div>
         )}
 
-        {isSearching && (
+        {isSearching && !listLoading && (
           <p className="search-results">
-            Found {parks.length} park{parks.length !== 1 ? 's' : ''} matching &quot;{searchQuery}&quot;
+            Found {totalCount} park{totalCount !== 1 ? 's' : ''} matching &quot;{searchQuery}&quot;
           </p>
         )}
       </header>
 
-      <div className="parks-grid">
-        {currentParks.map((park) => (
+      {listLoading && (
+        <p className="parks-loading-inline">Loading parks…</p>
+      )}
+
+      <div className={`parks-grid ${listLoading ? 'parks-grid-loading' : ''}`}>
+        {parks.map((park) => (
           <Link
             key={park.park_code || park._id}
-            to={`/countries/${park.country_code || 'USA'}/states/${Array.isArray(park.state_code) ? park.state_code[0] : park.state_code}/parks/${park.park_code}`}
+            to={`/countries/${park.country_code || 'US'}/states/${Array.isArray(park.state_code) ? park.state_code[0] : park.state_code}/parks/${park.park_code}`}
             state={{ from: 'search' }}
             className="park-card-link"
           >
@@ -268,14 +317,14 @@ function Parks() {
           <button
             className="pagination-btn"
             onClick={() => goToPage(1)}
-            disabled={currentPage === 1}
+            disabled={currentPage === 1 || listLoading}
           >
             First
           </button>
           <button
             className="pagination-btn"
             onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
+            disabled={currentPage === 1 || listLoading}
           >
             Previous
           </button>
@@ -285,21 +334,21 @@ function Parks() {
           <button
             className="pagination-btn"
             onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages || listLoading}
           >
             Next
           </button>
           <button
             className="pagination-btn"
             onClick={() => goToPage(totalPages)}
-            disabled={currentPage === totalPages}
+            disabled={currentPage === totalPages || listLoading}
           >
             Last
           </button>
         </div>
       )}
 
-      {parks.length === 0 && (
+      {!listLoading && parks.length === 0 && (
         <p className="no-data">
           {isSearching ? 'No parks found matching your search.' : 'No parks found. Load some data!'}
         </p>

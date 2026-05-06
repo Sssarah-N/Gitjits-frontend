@@ -299,3 +299,16 @@
 .search-select:hover {
   border-color: #2e7d32;
 }
+
+.parks-loading-inline {
+  text-align: center;
+  color: #2e7d32;
+  font-weight: 500;
+  margin: 0 0 12px;
+}
+
+.parks-grid-loading {
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
